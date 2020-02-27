@@ -9,7 +9,6 @@
 
 #include <chrono>
 #include <deque>
-#include <functional>
 #include <mutex>
 #include <queue>
 #include <thread>
