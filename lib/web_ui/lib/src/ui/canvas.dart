@@ -76,9 +76,8 @@ class Vertices {
         _mode = mode,
         _colors = _int32ListFromColors(colors),
         _indices = indices != null ? Uint16List.fromList(indices) : null,
-        _positions = engine.offsetListToFloat32List(positions),
-        _textureCoordinates =
-            engine.offsetListToFloat32List(textureCoordinates) {
+        _positions = _offsetListToInt32List(positions),
+        _textureCoordinates = _offsetListToInt32List(textureCoordinates) {
     engine.initWebGl();
   }
 
@@ -124,6 +123,19 @@ class Vertices {
         _colors = colors,
         _indices = indices {
     engine.initWebGl();
+  }
+
+  static Float32List _offsetListToInt32List(List<Offset> offsetList) {
+    if (offsetList == null) {
+      return null;
+    }
+    final int length = offsetList.length;
+    final floatList = Float32List(length * 2);
+    for (int i = 0, destIndex = 0; i < length; i++, destIndex += 2) {
+      floatList[destIndex] = offsetList[i].dx;
+      floatList[destIndex + 1] = offsetList[i].dy;
+    }
+    return floatList;
   }
 
   static Int32List _int32ListFromColors(List<Color> colors) {
@@ -938,8 +950,7 @@ class Canvas {
     assert(pointMode != null);
     assert(points != null);
     assert(paint != null);
-    final Float32List pointList = engine.offsetListToFloat32List(points);
-    drawRawPoints(pointMode, pointList, paint);
+    throw UnimplementedError();
   }
 
   /// Draws a sequence of points according to the given [PointMode].
@@ -958,7 +969,7 @@ class Canvas {
     if (points.length % 2 != 0) {
       throw ArgumentError('"points" must have an even number of values.');
     }
-    _canvas.drawRawPoints(pointMode, points, paint);
+    throw UnimplementedError();
   }
 
   void drawVertices(Vertices vertices, BlendMode blendMode, Paint paint) {
