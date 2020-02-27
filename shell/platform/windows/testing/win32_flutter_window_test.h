@@ -14,7 +14,7 @@ class Win32FlutterWindowTest : public Win32FlutterWindow {
  public:
   Win32FlutterWindowTest(int width, int height);
 
-  virtual ~Win32FlutterWindowTest();
+  ~Win32FlutterWindowTest();
 
   // |Win32Window|
   void OnFontChange() override;

@@ -112,6 +112,10 @@ Win32Window::MessageHandler(HWND hwnd,
       case kWmDpiChangedBeforeParent:
         return HandleDpiChange(window_handle_, wparam, lparam, false);
         break;
+      case WM_DESTROY:
+        window->OnClose();
+        return 0;
+        break;
       case WM_SIZE:
         width = LOWORD(lparam);
         height = HIWORD(lparam);
