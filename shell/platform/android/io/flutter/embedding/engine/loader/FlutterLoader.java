@@ -234,7 +234,6 @@ public class FlutterLoader {
           "ensureInitializationComplete must be called after startInitialization");
     }
     if (initialized) {
-      callbackHandler.post(callback);
       return;
     }
     new Thread(
