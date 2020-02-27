@@ -110,10 +110,10 @@ class Surface {
       ..position = 'absolute'
       ..width = '${logicalSize.width.ceil()}px'
       ..height = '${logicalSize.height.ceil()}px';
-    final int glContext = canvasKit
+    final js.JsObject glContext = canvasKit
         .callMethod('GetWebGLContext', <html.CanvasElement>[htmlCanvas]);
     final js.JsObject grContext =
-        canvasKit.callMethod('MakeGrContext', [glContext]);
+        canvasKit.callMethod('MakeGrContext', <js.JsObject>[glContext]);
     final js.JsObject skSurface =
         canvasKit.callMethod('MakeOnScreenGLSurface', <dynamic>[
       grContext,
@@ -135,7 +135,7 @@ class Surface {
       return false;
     }
 
-    canvasKit.callMethod('setCurrentContext', [_surface.context]);
+    canvasKit.callMethod('setCurrentContext', <js.JsObject>[_surface.context]);
     _surface.getCanvas().flush();
     return true;
   }
@@ -144,7 +144,7 @@ class Surface {
 /// A Dart wrapper around Skia's SkSurface.
 class SkSurface {
   final js.JsObject _surface;
-  final int _glContext;
+  final js.JsObject _glContext;
 
   SkSurface(this._surface, this._glContext);
 
@@ -153,7 +153,7 @@ class SkSurface {
     return SkCanvas(skCanvas);
   }
 
-  int get context => _glContext;
+  js.JsObject get context => _glContext;
 
   int width() => _surface.callMethod('width');
   int height() => _surface.callMethod('height');
