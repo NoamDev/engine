@@ -24,14 +24,6 @@ void EmbedderTestCompositor::SetRenderTargetType(RenderTargetType type) {
   type_ = type;
 }
 
-static void InvokeAllCallbacks(const std::vector<fml::closure>& callbacks) {
-  for (const auto& callback : callbacks) {
-    if (callback) {
-      callback();
-    }
-  }
-}
-
 bool EmbedderTestCompositor::CreateBackingStore(
     const FlutterBackingStoreConfig* config,
     FlutterBackingStore* backing_store_out) {
@@ -51,8 +43,7 @@ bool EmbedderTestCompositor::CreateBackingStore(
       return false;
   }
   if (success) {
-    backing_stores_created_++;
-    InvokeAllCallbacks(on_create_render_target_callbacks_);
+    backing_stores_count_++;
   }
   return success;
 }
@@ -63,8 +54,7 @@ bool EmbedderTestCompositor::CollectBackingStore(
   // stores. Our user_data is just the canvas from that backing store and does
   // not need to be explicitly collected. Embedders might have some other state
   // they want to collect though.
-  backing_stores_collected_++;
-  InvokeAllCallbacks(on_collect_render_target_callbacks_);
+  backing_stores_count_--;
   return true;
 }
 
@@ -172,15 +162,12 @@ bool EmbedderTestCompositor::Present(const FlutterLayer** layers,
 
   // If the test has asked to access the layers and renderers being presented.
   // Access the same and present it to the test for its test assertions.
-  if (present_callback_) {
-    auto callback = present_callback_;
-    if (present_callback_is_one_shot_) {
-      present_callback_ = nullptr;
-    }
+  if (next_present_callback_) {
+    auto callback = next_present_callback_;
+    next_present_callback_ = nullptr;
     callback(layers, layers_count);
   }
 
-  InvokeAllCallbacks(on_present_callbacks_);
   return true;
 }
 
@@ -198,6 +185,7 @@ bool EmbedderTestCompositor::CreateFramebufferRenderSurface(
       kBottomLeft_GrSurfaceOrigin,  // surface origin
       nullptr,                      // surface properties
       false                         // mipmaps
+
   );
 
   if (!surface) {
@@ -319,15 +307,8 @@ bool EmbedderTestCompositor::CreateSoftwareRenderSurface(
 
 void EmbedderTestCompositor::SetNextPresentCallback(
     const PresentCallback& next_present_callback) {
-  SetPresentCallback(next_present_callback, true);
-}
-
-void EmbedderTestCompositor::SetPresentCallback(
-    const PresentCallback& present_callback,
-    bool one_shot) {
-  FML_CHECK(!present_callback_);
-  present_callback_ = present_callback;
-  present_callback_is_one_shot_ = one_shot;
+  FML_CHECK(!next_present_callback_);
+  next_present_callback_ = next_present_callback;
 }
 
 void EmbedderTestCompositor::SetNextSceneCallback(
@@ -341,31 +322,8 @@ void EmbedderTestCompositor::SetPlatformViewRendererCallback(
   platform_view_renderer_callback_ = callback;
 }
 
-size_t EmbedderTestCompositor::GetPendingBackingStoresCount() const {
-  FML_CHECK(backing_stores_created_ >= backing_stores_collected_);
-  return backing_stores_created_ - backing_stores_collected_;
-}
-
-size_t EmbedderTestCompositor::GetBackingStoresCreatedCount() const {
-  return backing_stores_created_;
-}
-
-size_t EmbedderTestCompositor::GetBackingStoresCollectedCount() const {
-  return backing_stores_collected_;
-}
-
-void EmbedderTestCompositor::AddOnCreateRenderTargetCallback(
-    fml::closure callback) {
-  on_create_render_target_callbacks_.push_back(callback);
-}
-
-void EmbedderTestCompositor::AddOnCollectRenderTargetCallback(
-    fml::closure callback) {
-  on_collect_render_target_callbacks_.push_back(callback);
-}
-
-void EmbedderTestCompositor::AddOnPresentCallback(fml::closure callback) {
-  on_present_callbacks_.push_back(callback);
+size_t EmbedderTestCompositor::GetBackingStoresCount() const {
+  return backing_stores_count_;
 }
 
 }  // namespace testing
