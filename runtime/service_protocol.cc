@@ -13,7 +13,6 @@
 #include <utility>
 #include <vector>
 
-#include "flutter/fml/posix_wrappers.h"
 #include "flutter/fml/synchronization/waitable_event.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
@@ -124,7 +123,7 @@ bool ServiceProtocol::HandleMessage(const char* method,
   rapidjson::StringBuffer buffer;
   rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
   document.Accept(writer);
-  *json_object = fml::strdup(buffer.GetString());
+  *json_object = strdup(buffer.GetString());
 
 #ifndef NDEBUG
   FML_DLOG(INFO) << "Response: " << *json_object;
