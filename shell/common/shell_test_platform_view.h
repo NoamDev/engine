@@ -13,18 +13,11 @@ namespace testing {
 
 class ShellTestPlatformView : public PlatformView {
  public:
-  enum class BackendType {
-    kGLBackend,
-    kVulkanBackend,
-    kDefaultBackend,
-  };
-
   static std::unique_ptr<ShellTestPlatformView> Create(
       PlatformView::Delegate& delegate,
       TaskRunners task_runners,
       std::shared_ptr<ShellTestVsyncClock> vsync_clock,
-      CreateVsyncWaiter create_vsync_waiter,
-      BackendType backend);
+      CreateVsyncWaiter create_vsync_waiter);
 
   virtual void SimulateVSync() = 0;
 
