@@ -154,18 +154,16 @@ class BrowserPlatform extends PlatformPlugin {
     final Map<String, dynamic> requestData = json.decode(payload);
     final String filename = requestData['filename'];
     final bool write = requestData['write'];
-    final double maxDiffRate = requestData.containsKey('maxdiffrate')
-      ? requestData['maxdiffrate'].toDouble()  // can be parsed as either int or double
-      : kMaxDiffRateFailure;
+    final double maxDiffRate = requestData['maxdiffrate'];
     final Map<String, dynamic> region = requestData['region'];
-    final PixelComparison pixelComparison = PixelComparison.values.firstWhere((value) => value.toString() == requestData['pixelComparison']);
-    final String result = await _diffScreenshot(filename, write, maxDiffRate, region, pixelComparison);
+    final String result = await _diffScreenshot(
+        filename, write, maxDiffRate ?? kMaxDiffRateFailure, region);
     return shelf.Response.ok(json.encode(result));
   }
 
   Future<String> _diffScreenshot(
       String filename, bool write, double maxDiffRateFailure,
-      Map<String, dynamic> region, PixelComparison pixelComparison) async {
+      [Map<String, dynamic> region]) async {
     if (doUpdateScreenshotGoldens) {
       write = true;
     }
@@ -248,10 +246,8 @@ To automatically create this file call matchGoldenFile('$filename', write: true)
     }
 
     ImageDiff diff = ImageDiff(
-      golden: decodeNamedImage(file.readAsBytesSync(), filename),
-      other: screenshot,
-      pixelComparison: pixelComparison,
-    );
+        golden: decodeNamedImage(file.readAsBytesSync(), filename),
+        other: screenshot);
 
     if (diff.rate > 0) {
       // Images are different, so produce some debug info
