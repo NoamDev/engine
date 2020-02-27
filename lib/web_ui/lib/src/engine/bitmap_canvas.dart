@@ -722,9 +722,13 @@ List<html.Element> _clipContent(List<_SaveClipEntry> clipStack,
       setElementTransform(curElement, newClipTransform.storage);
     } else if (entry.path != null) {
       curElement.style.transform = matrix4ToCssTransform(newClipTransform);
-      String svgClipPath = createSvgClipDef(curElement, entry.path);
+      final String svgClipPath = _pathToSvgClipPath(entry.path);
       final html.Element clipElement =
           html.Element.html(svgClipPath, treeSanitizer: _NullTreeSanitizer());
+      domRenderer.setElementStyle(
+          curElement, 'clip-path', 'url(#svgClip$_clipIdCounter)');
+      domRenderer.setElementStyle(
+          curElement, '-webkit-clip-path', 'url(#svgClip$_clipIdCounter)');
       clipDefs.add(clipElement);
     }
     // Reverse the transform of the clipping element so children can use
