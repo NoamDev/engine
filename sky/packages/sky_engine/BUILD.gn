@@ -222,11 +222,12 @@ dart_pkg("sky_engine") {
     deps += [ ":copy_sky_engine_authors" ]
   }
 
-  service_isolate_dir = "//third_party/dart/sdk/lib/_internal/vm/bin/"
+  service_isolate_dir = "//third_party/dart/runtime/bin/vmservice"
   sdk_ext_directory = "$root_gen_dir/sky/bindings"
   sdk_ext_files = [
     "$service_isolate_dir/vmservice_io.dart",
-    "$service_isolate_dir/vmservice_server.dart",
+    "$service_isolate_dir/loader.dart",
+    "$service_isolate_dir/server.dart",
   ]
 }
 
