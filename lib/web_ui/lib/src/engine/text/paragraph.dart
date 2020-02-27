@@ -17,14 +17,12 @@ class EngineLineMetrics implements ui.LineMetrics {
     this.lineNumber,
   })  : text = null,
         startIndex = -1,
-        endIndex = -1,
-        endIndexWithoutNewlines = -1;
+        endIndex = -1;
 
   EngineLineMetrics.withText(
     this.text, {
     @required this.startIndex,
     @required this.endIndex,
-    @required this.endIndexWithoutNewlines,
     @required this.hardBreak,
     this.ascent,
     this.descent,
@@ -35,9 +33,6 @@ class EngineLineMetrics implements ui.LineMetrics {
     this.baseline,
     @required this.lineNumber,
   })  : assert(text != null),
-        assert(startIndex != null),
-        assert(endIndex != null),
-        assert(endIndexWithoutNewlines != null),
         assert(hardBreak != null),
         assert(width != null),
         assert(left != null),
@@ -54,10 +49,6 @@ class EngineLineMetrics implements ui.LineMetrics {
   /// When the line contains an overflow, then [endIndex] goes until the end of
   /// the text and doesn't stop at the overflow cutoff.
   final int endIndex;
-
-  /// The index (exclusive) in the text where this line ends, ignoring newline
-  /// characters.
-  final int endIndexWithoutNewlines;
 
   @override
   final bool hardBreak;
@@ -425,7 +416,7 @@ class EngineParagraph implements ui.Paragraph {
     // [offset] is to the right of the line.
     if (offset.dx >= lineRight) {
       return ui.TextPosition(
-        offset: lineMetrics.endIndexWithoutNewlines,
+        offset: lineMetrics.endIndex,
         affinity: ui.TextAffinity.upstream,
       );
     }
@@ -438,7 +429,7 @@ class EngineParagraph implements ui.Paragraph {
     final TextMeasurementService instance = _measurementService;
 
     int low = lineMetrics.startIndex;
-    int high = lineMetrics.endIndexWithoutNewlines;
+    int high = lineMetrics.endIndex;
     do {
       final int current = (low + high) ~/ 2;
       final double width = instance.measureSubstringWidth(this, lineMetrics.startIndex, current);

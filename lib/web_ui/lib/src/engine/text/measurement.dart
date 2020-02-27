@@ -429,8 +429,6 @@ class DomTextMeasurementService extends TextMeasurementService {
           text,
           startIndex: 0,
           endIndex: text.length,
-          endIndexWithoutNewlines:
-              _excludeTrailing(text, 0, text.length, _newlinePredicate),
           hardBreak: true,
           width: lineWidth,
           left: alignOffset,
@@ -798,8 +796,6 @@ class LinesCalculator {
           _text.substring(_lineStart, breakingPoint) + _style.ellipsis,
           startIndex: _lineStart,
           endIndex: chunkEnd,
-          endIndexWithoutNewlines:
-              _excludeTrailing(_text, _chunkStart, chunkEnd, _newlinePredicate),
           hardBreak: false,
           width: widthOfResultingLine,
           left: alignOffset,
@@ -865,7 +861,6 @@ class LinesCalculator {
       _text.substring(_lineStart, endWithoutNewlines),
       startIndex: _lineStart,
       endIndex: lineEnd,
-      endIndexWithoutNewlines: endWithoutNewlines,
       hardBreak: isHardBreak,
       width: lineWidth,
       left: alignOffset,
