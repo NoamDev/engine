@@ -27,7 +27,6 @@ class InputConnectionAdaptor extends BaseInputConnection {
     private final int mClient;
     private final TextInputChannel textInputChannel;
     private final Editable mEditable;
-    private final EditorInfo mEditorInfo;
     private int mBatchCount;
     private InputMethodManager mImm;
     private final Layout mLayout;
@@ -37,15 +36,13 @@ class InputConnectionAdaptor extends BaseInputConnection {
         View view,
         int client,
         TextInputChannel textInputChannel,
-        Editable editable,
-        EditorInfo editorInfo
+        Editable editable
     ) {
         super(view, true);
         mFlutterView = view;
         mClient = client;
         this.textInputChannel = textInputChannel;
         mEditable = editable;
-        mEditorInfo = editorInfo;
         mBatchCount = 0;
         // We create a dummy Layout with max width so that the selection
         // shifting acts as if all text were in one line.
@@ -205,10 +202,6 @@ class InputConnectionAdaptor extends BaseInputConnection {
                 int selStart = Selection.getSelectionStart(mEditable);
                 int newSel = Math.min(selStart + 1, mEditable.length());
                 setSelection(newSel, newSel);
-                return true;
-            } else if (event.getKeyCode() == KeyEvent.KEYCODE_ENTER ||
-                       event.getKeyCode() == KeyEvent.KEYCODE_NUMPAD_ENTER) {
-                performEditorAction(mEditorInfo.imeOptions & EditorInfo.IME_MASK_ACTION);
                 return true;
             } else {
                 // Enter a character.
