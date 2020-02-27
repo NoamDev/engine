@@ -215,7 +215,7 @@ public class FlutterEngine {
       boolean automaticallyRegisterPlugins
   ) {
     this.flutterJNI = flutterJNI;
-    flutterLoader.startInitialization(context.getApplicationContext());
+    flutterLoader.startInitialization(context);
     flutterLoader.ensureInitializationComplete(context, dartVmArgs);
 
     flutterJNI.addEngineLifecycleListener(engineLifecycleListener);
