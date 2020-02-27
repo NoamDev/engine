@@ -127,11 +127,15 @@ class MessageLoopTaskQueues
  private:
   class MergedQueuesRunner;
 
+  using Mutexes = std::vector<std::unique_ptr<std::mutex>>;
+
   MessageLoopTaskQueues();
 
   ~MessageLoopTaskQueues();
 
   void WakeUpUnlocked(TaskQueueId queue_id, fml::TimePoint time) const;
+
+  std::mutex& GetMutex(TaskQueueId queue_id) const;
 
   bool HasPendingTasksUnlocked(TaskQueueId queue_id) const;
 
@@ -143,8 +147,9 @@ class MessageLoopTaskQueues
   static std::mutex creation_mutex_;
   static fml::RefPtr<MessageLoopTaskQueues> instance_;
 
-  mutable std::mutex queue_mutex_;
+  std::unique_ptr<fml::SharedMutex> queue_meta_mutex_;
   std::map<TaskQueueId, std::unique_ptr<TaskQueueEntry>> queue_entries_;
+  std::map<TaskQueueId, std::unique_ptr<std::mutex>> queue_locks_;
 
   size_t task_queue_id_counter_;
 
