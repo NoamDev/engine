@@ -1893,20 +1893,20 @@ class Path extends NativeFieldWrapperClass2 {
   Path() { _constructor(); }
   void _constructor() native 'Path_constructor';
 
-  /// Avoids creating a new native backing for the path for methods that will
-  /// create it later, such as [Path.from], [shift] and [transform].
-  Path._();
+  // Workaround for tonic, which expects classes with native fields to have a
+  // private constructor.
+  // TODO(dnfield): rework this to use ClaimNativeField - https://github.com/flutter/flutter/issues/50997
+  @pragma('vm:entry-point')
+  Path._() { _constructor(); }
 
   /// Creates a copy of another [Path].
   ///
   /// This copy is fast and does not require additional memory unless either
   /// the `source` path or the path returned by this constructor are modified.
   factory Path.from(Path source) {
-    final Path clonedPath = Path._();
-    source._clone(clonedPath);
-    return clonedPath;
+    return source._clone();
   }
-  void _clone(Path outPath) native 'Path_clone';
+  Path _clone() native 'Path_clone';
 
   /// Determines how the interior of this path is calculated.
   ///
@@ -2169,21 +2169,17 @@ class Path extends NativeFieldWrapperClass2 {
   /// sub-path translated by the given offset.
   Path shift(Offset offset) {
     assert(_offsetIsValid(offset));
-    final Path path = Path._();
-    _shift(path, offset.dx, offset.dy);
-    return path;
+    return _shift(offset.dx, offset.dy);
   }
-  void _shift(Path outPath, double dx, double dy) native 'Path_shift';
+  Path _shift(double dx, double dy) native 'Path_shift';
 
   /// Returns a copy of the path with all the segments of every
   /// sub-path transformed by the given matrix.
   Path transform(Float64List matrix4) {
     assert(_matrix4IsValid(matrix4));
-    final Path path = Path._();
-    _transform(path, matrix4);
-    return path;
+    return _transform(matrix4);
   }
-  void _transform(Path outPath, Float64List matrix4) native 'Path_transform';
+  Path _transform(Float64List matrix4) native 'Path_transform';
 
   /// Computes the bounding rectangle for this path.
   ///
@@ -2459,11 +2455,9 @@ class _PathMeasure extends NativeFieldWrapperClass2 {
 
   Path extractPath(int contourIndex, double start, double end, {bool startWithMoveTo = true}) {
     assert(contourIndex <= currentContourIndex, 'Iterator must be advanced before index $contourIndex can be used.');
-    final Path path = Path._();
-    _extractPath(path, contourIndex, start, end, startWithMoveTo: startWithMoveTo);
-    return path;
+    return _extractPath(contourIndex, start, end, startWithMoveTo: startWithMoveTo);
   }
-  void _extractPath(Path outPath, int contourIndex, double start, double end, {bool startWithMoveTo = true}) native 'PathMeasure_getSegment';
+  Path _extractPath(int contourIndex, double start, double end, {bool startWithMoveTo = true}) native 'PathMeasure_getSegment';
 
   bool isClosed(int contourIndex) {
     assert(contourIndex <= currentContourIndex, 'Iterator must be advanced before index $contourIndex can be used.');

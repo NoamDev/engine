@@ -65,26 +65,26 @@ void CanvasPathMeasure::setPath(const CanvasPath* path, bool isClosed) {
   path_measure_->reset(skPath, isClosed);
 }
 
-float CanvasPathMeasure::getLength(int contour_index) {
+float CanvasPathMeasure::getLength(int contourIndex) {
   if (static_cast<std::vector<sk_sp<SkContourMeasure>>::size_type>(
-          contour_index) < measures_.size()) {
-    return measures_[contour_index]->length();
+          contourIndex) < measures_.size()) {
+    return measures_[contourIndex]->length();
   }
   return -1;
 }
 
-tonic::Float32List CanvasPathMeasure::getPosTan(int contour_index,
+tonic::Float32List CanvasPathMeasure::getPosTan(int contourIndex,
                                                 float distance) {
   tonic::Float32List posTan(Dart_NewTypedData(Dart_TypedData_kFloat32, 5));
   posTan[0] = 0;  // dart code will check for this for failure
   if (static_cast<std::vector<sk_sp<SkContourMeasure>>::size_type>(
-          contour_index) >= measures_.size()) {
+          contourIndex) >= measures_.size()) {
     return posTan;
   }
 
   SkPoint pos;
   SkVector tan;
-  bool success = measures_[contour_index]->getPosTan(distance, &pos, &tan);
+  bool success = measures_[contourIndex]->getPosTan(distance, &pos, &tan);
 
   if (success) {
     posTan[0] = 1;  // dart code will check for this for success
@@ -97,29 +97,28 @@ tonic::Float32List CanvasPathMeasure::getPosTan(int contour_index,
   return posTan;
 }
 
-void CanvasPathMeasure::getSegment(Dart_Handle path_handle,
-                                   int contour_index,
-                                   float start_d,
-                                   float stop_d,
-                                   bool start_with_move_to) {
+fml::RefPtr<CanvasPath> CanvasPathMeasure::getSegment(int contourIndex,
+                                                      float startD,
+                                                      float stopD,
+                                                      bool startWithMoveTo) {
   if (static_cast<std::vector<sk_sp<SkContourMeasure>>::size_type>(
-          contour_index) >= measures_.size()) {
-    CanvasPath::Create(path_handle);
+          contourIndex) >= measures_.size()) {
+    return CanvasPath::Create();
   }
   SkPath dst;
-  bool success = measures_[contour_index]->getSegment(start_d, stop_d, &dst,
-                                                      start_with_move_to);
+  bool success =
+      measures_[contourIndex]->getSegment(startD, stopD, &dst, startWithMoveTo);
   if (!success) {
-    CanvasPath::Create(path_handle);
+    return CanvasPath::Create();
   } else {
-    CanvasPath::CreateFrom(path_handle, dst);
+    return CanvasPath::CreateFrom(dst);
   }
 }
 
-bool CanvasPathMeasure::isClosed(int contour_index) {
+bool CanvasPathMeasure::isClosed(int contourIndex) {
   if (static_cast<std::vector<sk_sp<SkContourMeasure>>::size_type>(
-          contour_index) < measures_.size()) {
-    return measures_[contour_index]->isClosed();
+          contourIndex) < measures_.size()) {
+    return measures_[contourIndex]->isClosed();
   }
   return false;
 }
