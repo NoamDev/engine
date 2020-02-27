@@ -49,8 +49,7 @@ std::unique_ptr<VulkanSurface> VulkanSurfacePool::AcquireSurface(
 
 std::unique_ptr<VulkanSurface> VulkanSurfacePool::GetCachedOrCreateSurface(
     const SkISize& size) {
-  TRACE_EVENT2("flutter", "VulkanSurfacePool::GetCachedOrCreateSurface",
-               "width", size.width(), "height", size.height());
+  TRACE_EVENT0("flutter", "VulkanSurfacePool::GetCachedOrCreateSurface");
   // First try to find a surface that exactly matches |size|.
   {
     auto exact_match_it =
@@ -164,8 +163,7 @@ void VulkanSurfacePool::SubmitSurface(
 
 std::unique_ptr<VulkanSurface> VulkanSurfacePool::CreateSurface(
     const SkISize& size) {
-  TRACE_EVENT2("flutter", "VulkanSurfacePool::CreateSurface", "width",
-               size.width(), "height", size.height());
+  TRACE_EVENT0("flutter", "VulkanSurfacePool::CreateSurface");
   auto surface = std::make_unique<VulkanSurface>(vulkan_provider_, context_,
                                                  scenic_session_, size);
   if (!surface->IsValid()) {
