@@ -1,4 +1,3 @@
-// @dart = 2.6
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
