@@ -228,9 +228,7 @@ class RecordingCanvas {
   }
 
   void drawRRect(ui.RRect rrect, SurfacePaint paint) {
-    if (!rrect.webOnlyUniformRadii) {
-      _hasArbitraryPaint = true;
-    }
+    _hasArbitraryPaint = true;
     _didDraw = true;
     final double strokeWidth =
         paint.strokeWidth == null ? 0 : paint.strokeWidth;
