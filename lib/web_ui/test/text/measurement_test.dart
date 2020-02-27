@@ -1138,7 +1138,7 @@ void main() async {
 
 /// Shortcut to avoid many line wraps in the tests above.
 EngineLineMetrics line(
-  String displayText,
+  String text,
   int startIndex,
   int endIndex, {
   double width,
@@ -1147,7 +1147,7 @@ EngineLineMetrics line(
   double left,
 }) {
   return EngineLineMetrics.withText(
-    displayText,
+    text,
     startIndex: startIndex,
     endIndex: endIndex,
     hardBreak: hardBreak,

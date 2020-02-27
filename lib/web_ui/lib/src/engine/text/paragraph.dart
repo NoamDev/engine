@@ -16,13 +16,13 @@ class EngineLineMetrics implements ui.LineMetrics {
     this.left,
     this.baseline,
     this.lineNumber,
-  })  : displayText = null,
+  })  : text = null,
         startIndex = -1,
         endIndex = -1,
         endIndexWithoutNewlines = -1;
 
   EngineLineMetrics.withText(
-    this.displayText, {
+    this.text, {
     @required this.startIndex,
     @required this.endIndex,
     @required this.endIndexWithoutNewlines,
@@ -35,7 +35,7 @@ class EngineLineMetrics implements ui.LineMetrics {
     @required this.left,
     this.baseline,
     @required this.lineNumber,
-  })  : assert(displayText != null),
+  })  : assert(text != null),
         assert(startIndex != null),
         assert(endIndex != null),
         assert(endIndexWithoutNewlines != null),
@@ -44,8 +44,8 @@ class EngineLineMetrics implements ui.LineMetrics {
         assert(left != null),
         assert(lineNumber != null && lineNumber >= 0);
 
-  /// The text to be rendered on the screen representing this line.
-  final String displayText;
+  /// The textual content representing this line.
+  final String text;
 
   /// The index (inclusive) in the text where this line begins.
   final int startIndex;
@@ -89,7 +89,7 @@ class EngineLineMetrics implements ui.LineMetrics {
 
   @override
   int get hashCode => ui.hashValues(
-        displayText,
+        text,
         startIndex,
         endIndex,
         hardBreak,
@@ -113,7 +113,7 @@ class EngineLineMetrics implements ui.LineMetrics {
       return false;
     }
     final EngineLineMetrics typedOther = other;
-    return displayText == typedOther.displayText &&
+    return text == typedOther.text &&
         startIndex == typedOther.startIndex &&
         endIndex == typedOther.endIndex &&
         hardBreak == typedOther.hardBreak &&
