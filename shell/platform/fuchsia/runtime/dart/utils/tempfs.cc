@@ -45,10 +45,9 @@ void RunnerTemp::Start() {
     zx_status_t status = memfs_install_at_with_page_limit(
         loop_->dispatcher(), kMaxTmpPages, kTmpPath);
 #else
-    memfs_filesystem_t* fs;
     // Hot reload uses /tmp to hold the updated dills and assets so do not
     // impose any size limitation in non product runners.
-    zx_status_t status = memfs_install_at(loop_->dispatcher(), kTmpPath, &fs);
+    zx_status_t status = memfs_install_at(loop_->dispatcher(), kTmpPath);
 #endif
     finished.set_value();
     if (status != ZX_OK) {
