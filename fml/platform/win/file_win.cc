@@ -8,6 +8,7 @@
 #include <Shlwapi.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <sys/stat.h>
 
 #include <algorithm>
 #include <sstream>
@@ -16,6 +17,10 @@
 #include "flutter/fml/mapping.h"
 #include "flutter/fml/platform/win/errors_win.h"
 #include "flutter/fml/platform/win/wstring_conversion.h"
+
+#if defined(OS_WIN)
+#define S_ISREG(m) (((m)&S_IFMT) == S_IFREG)
+#endif
 
 namespace fml {
 
@@ -73,16 +78,6 @@ static DWORD GetShareFlags(FilePermission permission) {
       return FILE_SHARE_READ | FILE_SHARE_WRITE;
   }
   return FILE_SHARE_READ;
-}
-
-static DWORD GetFileAttributesForUtf8Path(const char* absolute_path) {
-  return ::GetFileAttributes(ConvertToWString(absolute_path).c_str());
-}
-
-static DWORD GetFileAttributesForUtf8Path(const fml::UniqueFD& base_directory,
-                                          const char* path) {
-  std::string full_path = GetFullHandlePath(base_directory) + "\\" + path;
-  return GetFileAttributesForUtf8Path(full_path.c_str());
 }
 
 std::string CreateTemporaryDirectory() {
@@ -258,17 +253,16 @@ bool IsDirectory(const fml::UniqueFD& directory) {
 }
 
 bool IsDirectory(const fml::UniqueFD& base_directory, const char* path) {
-  return GetFileAttributesForUtf8Path(base_directory, path) &
+  std::string full_path = GetFullHandlePath(base_directory) + "\\" + path;
+  return ::GetFileAttributes(ConvertToWString(full_path.c_str()).c_str()) &
          FILE_ATTRIBUTE_DIRECTORY;
 }
 
 bool IsFile(const std::string& path) {
-  DWORD attributes = GetFileAttributesForUtf8Path(path.c_str());
-  if (attributes == INVALID_FILE_ATTRIBUTES) {
+  struct stat buf;
+  if (stat(path.c_str(), &buf) != 0)
     return false;
-  }
-  return !(attributes &
-           (FILE_ATTRIBUTE_DIRECTORY | FILE_ATTRIBUTE_REPARSE_POINT));
+  return S_ISREG(buf.st_mode);
 }
 
 bool UnlinkDirectory(const char* path) {
@@ -329,8 +323,7 @@ bool TruncateFile(const fml::UniqueFD& file, size_t size) {
 }
 
 bool FileExists(const fml::UniqueFD& base_directory, const char* path) {
-  return GetFileAttributesForUtf8Path(base_directory, path) !=
-         INVALID_FILE_ATTRIBUTES;
+  return IsFile(GetAbsolutePath(base_directory, path).c_str());
 }
 
 bool WriteAtomically(const fml::UniqueFD& base_directory,
