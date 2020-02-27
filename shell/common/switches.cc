@@ -242,11 +242,6 @@ Settings SettingsFromCommandLine(const fml::CommandLine& command_line) {
   settings.disable_service_auth_codes =
       command_line.HasOption(FlagForSwitch(Switch::DisableServiceAuthCodes));
 
-  // Allow fallback to automatic port selection if binding to a specified port
-  // fails.
-  settings.enable_service_port_fallback =
-      command_line.HasOption(FlagForSwitch(Switch::EnableServicePortFallback));
-
   // Checked mode overrides.
   settings.disable_dart_asserts =
       command_line.HasOption(FlagForSwitch(Switch::DisableDartAsserts));
