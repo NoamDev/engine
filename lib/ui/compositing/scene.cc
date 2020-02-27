@@ -26,15 +26,13 @@ IMPLEMENT_WRAPPERTYPEINFO(ui, Scene);
 
 DART_BIND_ALL(Scene, FOR_EACH_BINDING)
 
-void Scene::create(Dart_Handle scene_handle,
-                   std::shared_ptr<flutter::Layer> rootLayer,
-                   uint32_t rasterizerTracingThreshold,
-                   bool checkerboardRasterCacheImages,
-                   bool checkerboardOffscreenLayers) {
-  auto scene = fml::MakeRefCounted<Scene>(
+fml::RefPtr<Scene> Scene::create(std::shared_ptr<flutter::Layer> rootLayer,
+                                 uint32_t rasterizerTracingThreshold,
+                                 bool checkerboardRasterCacheImages,
+                                 bool checkerboardOffscreenLayers) {
+  return fml::MakeRefCounted<Scene>(
       std::move(rootLayer), rasterizerTracingThreshold,
       checkerboardRasterCacheImages, checkerboardOffscreenLayers);
-  scene->ClaimDartHandle(scene_handle);
 }
 
 Scene::Scene(std::shared_ptr<flutter::Layer> rootLayer,
