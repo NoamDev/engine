@@ -50,7 +50,7 @@ abstract class PlatformBinding {
   String getChromeExecutablePath(io.Directory versionDir);
   String getFirefoxExecutablePath(io.Directory versionDir);
   String getFirefoxLatestVersionUrl();
-  String getMacApplicationLauncher();
+  String getSafariSystemExecutablePath();
   String getCommandToRunEdge();
 }
 
@@ -85,7 +85,7 @@ class _WindowsBinding implements PlatformBinding {
       'https://download.mozilla.org/?product=firefox-latest&os=win&lang=en-US';
 
   @override
-  String getMacApplicationLauncher() =>
+  String getSafariSystemExecutablePath() =>
       throw UnsupportedError('Safari is not supported on Windows');
 
   @override
@@ -120,7 +120,7 @@ class _LinuxBinding implements PlatformBinding {
       'https://download.mozilla.org/?product=firefox-latest&os=linux64&lang=en-US';
 
   @override
-  String getMacApplicationLauncher() =>
+  String getSafariSystemExecutablePath() =>
       throw UnsupportedError('Safari is not supported on Linux');
 
   @override
@@ -161,7 +161,8 @@ class _MacBinding implements PlatformBinding {
       'https://download.mozilla.org/?product=firefox-latest&os=osx&lang=en-US';
 
   @override
-  String getMacApplicationLauncher() => 'open';
+  String getSafariSystemExecutablePath() =>
+      '/Applications/Safari.app/Contents/MacOS/Safari';
 
   @override
   String getCommandToRunEdge() =>

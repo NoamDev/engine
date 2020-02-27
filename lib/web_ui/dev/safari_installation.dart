@@ -70,7 +70,7 @@ Future<BrowserInstallation> getOrInstallSafari(
     infoLog.writeln('Using the system version that is already installed.');
     return BrowserInstallation(
       version: 'system',
-      executable: PlatformBinding.instance.getMacApplicationLauncher(),
+      executable: PlatformBinding.instance.getSafariSystemExecutablePath(),
     );
   } else {
     infoLog.writeln('Unsupported version $requestedVersion.');
