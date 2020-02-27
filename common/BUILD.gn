@@ -17,11 +17,11 @@ source_set("common") {
   ]
 
   deps = [
-    "//flutter/fml",
+    "$flutter_root/fml",
   ]
 
   public_configs = [
     ":flutter_config",
-    "//flutter:config",
+    "$flutter_root:config",
   ]
 }

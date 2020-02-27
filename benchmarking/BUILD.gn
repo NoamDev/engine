@@ -15,12 +15,12 @@ source_set("benchmarking") {
   ]
 
   public_deps = [
-    "//flutter/fml",
+    "$flutter_root/fml",
     "//third_party/benchmark",
   ]
 
   public_configs = [
-    "//flutter:config",
+    "$flutter_root:config",
     ":benchmark_config",
   ]
 }
