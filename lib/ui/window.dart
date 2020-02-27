@@ -472,10 +472,12 @@ class Locale {
   bool operator ==(dynamic other) {
     if (identical(this, other))
       return true;
-    return other is Locale
-        && other.languageCode == languageCode
-        && other.scriptCode == scriptCode
-        && other.countryCode == countryCode;
+    if (other is! Locale)
+      return false;
+    final Locale typedOther = other;
+    return languageCode == typedOther.languageCode
+        && scriptCode == typedOther.scriptCode
+        && countryCode == typedOther.countryCode;
   }
 
   @override
@@ -1258,8 +1260,8 @@ class AccessibilityFeatures {
   bool operator ==(dynamic other) {
     if (other.runtimeType != runtimeType)
       return false;
-    return other is AccessibilityFeatures
-        && other._index == _index;
+    final AccessibilityFeatures typedOther = other;
+    return _index == typedOther._index;
   }
 
   @override

@@ -582,7 +582,7 @@ class SceneBuilder extends NativeFieldWrapperClass2 {
   void addRetained(EngineLayer retainedLayer) {
     assert(retainedLayer is _EngineLayerWrapper);
     assert(() {
-      final _EngineLayerWrapper layer = retainedLayer as _EngineLayerWrapper;
+      final _EngineLayerWrapper layer = retainedLayer;
 
       void recursivelyCheckChildrenUsedOnce(_EngineLayerWrapper parentLayer) {
         _debugCheckUsedOnce(parentLayer, 'retained layer');
@@ -600,7 +600,7 @@ class SceneBuilder extends NativeFieldWrapperClass2 {
       return true;
     }());
 
-    final _EngineLayerWrapper wrapper = retainedLayer as _EngineLayerWrapper;
+    final _EngineLayerWrapper wrapper = retainedLayer;
     _addRetained(wrapper._nativeLayer);
   }
 

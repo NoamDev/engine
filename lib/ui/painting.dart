@@ -53,7 +53,7 @@ bool _radiusIsValid(Radius radius) {
 }
 
 Color _scaleAlpha(Color a, double factor) {
-  return a.withAlpha((a.alpha * factor).round().clamp(0, 255) as int);
+  return a.withAlpha((a.alpha * factor).round().clamp(0, 255));
 }
 
 /// An immutable 32 bit color value in ARGB format.
@@ -217,7 +217,7 @@ class Color {
   static double _linearizeColorComponent(double component) {
     if (component <= 0.03928)
       return component / 12.92;
-    return math.pow((component + 0.055) / 1.055, 2.4) as double;
+    return math.pow((component + 0.055) / 1.055, 2.4);
   }
 
   /// Returns a brightness value between 0 for darkest and 1 for lightest.
@@ -265,10 +265,10 @@ class Color {
     if (b == null)
       return _scaleAlpha(a, 1.0 - t);
     return Color.fromARGB(
-      lerpDouble(a.alpha, b.alpha, t).toInt().clamp(0, 255) as int,
-      lerpDouble(a.red, b.red, t).toInt().clamp(0, 255) as int,
-      lerpDouble(a.green, b.green, t).toInt().clamp(0, 255) as int,
-      lerpDouble(a.blue, b.blue, t).toInt().clamp(0, 255) as int,
+      lerpDouble(a.alpha, b.alpha, t).toInt().clamp(0, 255),
+      lerpDouble(a.red, b.red, t).toInt().clamp(0, 255),
+      lerpDouble(a.green, b.green, t).toInt().clamp(0, 255),
+      lerpDouble(a.blue, b.blue, t).toInt().clamp(0, 255),
     );
   }
 
@@ -321,8 +321,8 @@ class Color {
       return true;
     if (other.runtimeType != runtimeType)
       return false;
-    return other is Color
-        && other.value == value;
+    final Color typedOther = other;
+    return value == typedOther.value;
   }
 
   @override
@@ -1338,7 +1338,7 @@ class Paint {
   Shader get shader {
     if (_objects == null)
       return null;
-    return _objects[_kShaderIndex] as Shader;
+    return _objects[_kShaderIndex];
   }
   set shader(Shader value) {
     _objects ??= List<dynamic>(_kObjectCount);
@@ -1355,7 +1355,7 @@ class Paint {
     if (_objects == null || _objects[_kColorFilterIndex] == null) {
       return null;
     }
-    return _objects[_kColorFilterIndex].creator as ColorFilter;
+    return _objects[_kColorFilterIndex].creator;
   }
 
   set colorFilter(ColorFilter value) {
@@ -1399,7 +1399,7 @@ class Paint {
   ImageFilter get imageFilter {
     if (_objects == null || _objects[_kImageFilterIndex] == null)
       return null;
-    return _objects[_kImageFilterIndex].creator as ImageFilter;
+    return _objects[_kImageFilterIndex].creator;
   }
 
   set imageFilter(ImageFilter value) {
@@ -2508,9 +2508,11 @@ class MaskFilter {
 
   @override
   bool operator ==(dynamic other) {
-    return other is MaskFilter
-        && other._style == _style
-        && other._sigma == _sigma;
+    if (other is! MaskFilter)
+      return false;
+    final MaskFilter typedOther = other;
+    return _style == typedOther._style &&
+           _sigma == typedOther._sigma;
   }
 
   @override
@@ -2637,11 +2639,19 @@ class ColorFilter {
 
   @override
   bool operator ==(dynamic other) {
-    return other is ColorFilter
-        && other._type == _type
-        && _listEquals<double>(other._matrix, _matrix)
-        && other._color == _color
-        && other._blendMode == _blendMode;
+    if (other is! ColorFilter) {
+      return false;
+    }
+    final ColorFilter typedOther = other;
+
+    if (_type != typedOther._type) {
+      return false;
+    }
+    if (!_listEquals<double>(_matrix, typedOther._matrix)) {
+      return false;
+    }
+
+    return _color == typedOther._color && _blendMode == typedOther._blendMode;
   }
 
   _ColorFilter _toNativeColorFilter() {
@@ -2781,10 +2791,19 @@ class ImageFilter {
 
   @override
   bool operator ==(dynamic other) {
-    return other is ImageFilter
-        && other._type == _type
-        && _listEquals<double>(other._data, _data)
-        && other._filterQuality == _filterQuality;
+    if (other is! ImageFilter) {
+      return false;
+    }
+    final ImageFilter typedOther = other;
+
+    if (_type != typedOther._type) {
+      return false;
+    }
+    if (!_listEquals<double>(_data, typedOther._data)) {
+      return false;
+    }
+
+    return _filterQuality == typedOther._filterQuality;
   }
 
   _ImageFilter _toNativeImageFilter() => _nativeFilter ??= _makeNativeImageFilter();
@@ -3168,15 +3187,6 @@ enum VertexMode {
 
 /// A set of vertex data used by [Canvas.drawVertices].
 class Vertices extends NativeFieldWrapperClass2 {
-  /// Creates a set of vertex data for use with [Canvas.drawVertices].
-  ///
-  /// The [mode] and [positions] parameters must not be null.
-  ///
-  /// If the [textureCoordinates] or [colors] parameters are provided, they must
-  /// be the same length as [positions].
-  ///
-  /// If the [indices] parameter is provided, all values in the list must be
-  /// valid index values for [positions].
   Vertices(
     VertexMode mode,
     List<Offset> positions, {
@@ -3208,24 +3218,6 @@ class Vertices extends NativeFieldWrapperClass2 {
       throw ArgumentError('Invalid configuration for vertices.');
   }
 
-  /// Creates a set of vertex data for use with [Canvas.drawVertices], directly
-  /// using the encoding methods of [new Vertices].
-  ///
-  /// The [mode] parameter must not be null.
-  ///
-  /// The [positions] list is interpreted as a list of repeated pairs of x,y
-  /// coordinates. It must not be null.
-  ///
-  /// The [textureCoordinates] list is interpreted as a list of repeated pairs
-  /// of x,y coordinates, and must be the same length of [positions] if it
-  /// is not null.
-  ///
-  /// The [colors] list is interpreted as a list of RGBA encoded colors, similar
-  /// to [Color.value]. It must be half length of [positions] if it is not
-  /// null.
-  ///
-  /// If the [indices] list is provided, all values in the list must be
-  /// valid index values for [positions].
   Vertices.raw(
     VertexMode mode,
     Float32List positions, {
@@ -3899,14 +3891,6 @@ class Canvas extends NativeFieldWrapperClass2 {
                    int pointMode,
                    Float32List points) native 'Canvas_drawPoints';
 
-  /// Draws the set of [Vertices] onto the canvas.
-  ///
-  /// All parameters must not be null.
-  ///
-  /// See also:
-  ///   * [new Vertices], which creates a set of vertices to draw on the canvas.
-  ///   * [Vertices.raw], which creates the vertices using typed data lists
-  ///     rather than unencoded lists.
   void drawVertices(Vertices vertices, BlendMode blendMode, Paint paint) {
     assert(vertices != null); // vertices is checked on the engine side
     assert(paint != null);
@@ -3918,18 +3902,11 @@ class Canvas extends NativeFieldWrapperClass2 {
                      List<dynamic> paintObjects,
                      ByteData paintData) native 'Canvas_drawVertices';
 
-  /// Draws part of an image - the [atlas] - onto the canvas.
-  ///
-  /// This method allows for optimization when you only want to draw part of an
-  /// image on the canvas, such as when using sprites or zooming. It is more
-  /// efficient than using clips or masks directly.
-  ///
-  /// All parameters mmust not be null.
-  ///
-  /// See also:
-  ///
-  ///  * [drawRawAtlas], which takes its arguments as typed data lists rather
-  ///    than objects.
+  //
+  // See also:
+  //
+  //  * [drawRawAtlas], which takes its arguments as typed data lists rather
+  //    than objects.
   void drawAtlas(Image atlas,
                  List<RSTransform> transforms,
                  List<Rect> rects,
@@ -3980,26 +3957,21 @@ class Canvas extends NativeFieldWrapperClass2 {
     );
   }
 
-  /// Draws part of an image - the [atlas] - onto the canvas.
-  ///
-  /// This method allows for optimization when you only want to draw part of an
-  /// image on the canvas, such as when using sprites or zooming. It is more
-  /// efficient than using clips or masks directly.
-  ///
-  /// The [rstTransforms] argument is interpreted as a list of four-tuples, with
-  /// each tuple being ([RSTransform.scos], [RSTransform.ssin],
-  /// [RSTransform.tx], [RSTransform.ty]).
-  ///
-  /// The [rects] argument is interpreted as a list of four-tuples, with each
-  /// tuple being ([Rect.left], [Rect.top], [Rect.right], [Rect.bottom]).
-  ///
-  /// The [colors] argument, which can be null, is interpreted as a list of
-  /// 32-bit colors, with the same packing as [Color.value].
-  ///
-  /// See also:
-  ///
-  ///  * [drawAtlas], which takes its arguments as objects rather than typed
-  ///    data lists.
+  //
+  // The `rstTransforms` argument is interpreted as a list of four-tuples, with
+  // each tuple being ([RSTransform.scos], [RSTransform.ssin],
+  // [RSTransform.tx], [RSTransform.ty]).
+  //
+  // The `rects` argument is interpreted as a list of four-tuples, with each
+  // tuple being ([Rect.left], [Rect.top], [Rect.right], [Rect.bottom]).
+  //
+  // The `colors` argument, which can be null, is interpreted as a list of
+  // 32-bit colors, with the same packing as [Color.value].
+  //
+  // See also:
+  //
+  //  * [drawAtlas], which takes its arguments as objects rather than typed
+  //    data lists.
   void drawRawAtlas(Image atlas,
                     Float32List rstTransforms,
                     Float32List rects,
@@ -4278,10 +4250,12 @@ class Shadow {
   bool operator ==(dynamic other) {
     if (identical(this, other))
       return true;
-    return other is Shadow
-        && other.color == color
-        && other.offset == offset
-        && other.blurRadius == blurRadius;
+    if (other is! Shadow)
+      return false;
+    final Shadow typedOther = other;
+    return color == typedOther.color &&
+           offset == typedOther.offset &&
+           blurRadius == typedOther.blurRadius;
   }
 
   @override

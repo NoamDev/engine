@@ -98,13 +98,13 @@ void _updateLocales(List<String> locales) {
 @pragma('vm:entry-point')
 // ignore: unused_element
 void _updateUserSettingsData(String jsonData) {
-  final Map<String, dynamic> data = json.decode(jsonData) as Map<String, dynamic>;
+  final Map<String, dynamic> data = json.decode(jsonData);
   if (data.isEmpty) {
     return;
   }
-  _updateTextScaleFactor((data['textScaleFactor'] as num).toDouble());
-  _updateAlwaysUse24HourFormat(data['alwaysUse24HourFormat'] as bool);
-  _updatePlatformBrightness(data['platformBrightness'] as String);
+  _updateTextScaleFactor(data['textScaleFactor'].toDouble());
+  _updateAlwaysUse24HourFormat(data['alwaysUse24HourFormat']);
+  _updatePlatformBrightness(data['platformBrightness']);
 }
 
 @pragma('vm:entry-point')
@@ -149,7 +149,6 @@ void _updateAccessibilityFeatures(int values) {
 }
 
 @pragma('vm:entry-point')
-// ignore: unused_element
 void _dispatchPlatformMessage(String name, ByteData data, int responseId) {
   if (name == ChannelBuffers.kControlChannelName) {
     try {

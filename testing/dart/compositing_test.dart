@@ -164,7 +164,7 @@ void main() {
   void testPushChildLayerOfRetainedLayer(_TestNoSharingFunction pushFunction) {
     final SceneBuilder builder1 = SceneBuilder();
     final EngineLayer layer = pushFunction(builder1, null);
-    final OpacityEngineLayer childLayer = builder1.pushOpacity(123);
+    final EngineLayer childLayer = builder1.pushOpacity(123);
     builder1.pop();
     builder1.pop();
     builder1.build();
@@ -187,7 +187,7 @@ void main() {
   void testRetainParentLayerOfPushedChild(_TestNoSharingFunction pushFunction) {
     final SceneBuilder builder1 = SceneBuilder();
     final EngineLayer layer = pushFunction(builder1, null);
-    final OpacityEngineLayer childLayer = builder1.pushOpacity(123);
+    final EngineLayer childLayer = builder1.pushOpacity(123);
     builder1.pop();
     builder1.pop();
     builder1.build();
@@ -292,25 +292,25 @@ void main() {
 
   test('SceneBuilder does not share a layer between addRetained and push*', () {
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushOffset(0, 0, oldLayer: oldLayer as OffsetEngineLayer);
+      return builder.pushOffset(0, 0, oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushTransform(Float64List(16), oldLayer: oldLayer as TransformEngineLayer);
+      return builder.pushTransform(Float64List(16), oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushClipRect(Rect.zero, oldLayer: oldLayer as ClipRectEngineLayer);
+      return builder.pushClipRect(Rect.zero, oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushClipRRect(RRect.zero, oldLayer: oldLayer as ClipRRectEngineLayer);
+      return builder.pushClipRRect(RRect.zero, oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushClipPath(Path(), oldLayer: oldLayer as ClipPathEngineLayer);
+      return builder.pushClipPath(Path(), oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushOpacity(100, oldLayer: oldLayer as OpacityEngineLayer);
+      return builder.pushOpacity(100, oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushBackdropFilter(ImageFilter.blur(), oldLayer: oldLayer as BackdropFilterEngineLayer);
+      return builder.pushBackdropFilter(ImageFilter.blur(), oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
       return builder.pushShaderMask(
@@ -321,11 +321,11 @@ void main() {
         ),
         Rect.zero,
         BlendMode.color,
-        oldLayer: oldLayer as ShaderMaskEngineLayer,
+        oldLayer: oldLayer,
       );
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
-      return builder.pushPhysicalShape(path: Path(), color: const Color.fromARGB(0, 0, 0, 0), oldLayer: oldLayer as PhysicalShapeEngineLayer);
+      return builder.pushPhysicalShape(path: Path(), color: const Color.fromARGB(0, 0, 0, 0), oldLayer: oldLayer);
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
       return builder.pushColorFilter(
@@ -333,7 +333,7 @@ void main() {
           Color.fromARGB(0, 0, 0, 0),
           BlendMode.color,
         ),
-        oldLayer: oldLayer as ColorFilterEngineLayer,
+        oldLayer: oldLayer,
       );
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
@@ -344,25 +344,25 @@ void main() {
           0, 0, 1, 0, 0,
           0, 0, 0, 1, 0,
         ]),
-        oldLayer: oldLayer as ColorFilterEngineLayer,
+        oldLayer: oldLayer,
       );
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
       return builder.pushColorFilter(
         const ColorFilter.linearToSrgbGamma(),
-        oldLayer: oldLayer as ColorFilterEngineLayer,
+        oldLayer: oldLayer,
       );
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
       return builder.pushColorFilter(
         const ColorFilter.srgbToLinearGamma(),
-        oldLayer: oldLayer as ColorFilterEngineLayer,
+        oldLayer: oldLayer,
       );
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
       return builder.pushImageFilter(
         ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-        oldLayer: oldLayer as ImageFilterEngineLayer,
+        oldLayer: oldLayer,
       );
     });
     testNoSharing((SceneBuilder builder, EngineLayer oldLayer) {
@@ -373,7 +373,7 @@ void main() {
           0, 0, 1, 0,
           0, 0, 0, 1,
         ])),
-        oldLayer: oldLayer as ImageFilterEngineLayer,
+        oldLayer: oldLayer,
       );
     });
   });
