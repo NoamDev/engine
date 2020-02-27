@@ -13,7 +13,6 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 import android.view.HapticFeedbackConstants;
 import android.view.SoundEffectConstants;
 import android.view.View;
@@ -122,8 +121,7 @@ public class PlatformPlugin {
         }
     }
 
-    @VisibleForTesting
-    /* package */ void vibrateHapticFeedback(PlatformChannel.HapticFeedbackType feedbackType) {
+    private void vibrateHapticFeedback(PlatformChannel.HapticFeedbackType feedbackType) {
         View view = activity.getWindow().getDecorView();
         switch (feedbackType) {
             case STANDARD:
@@ -136,14 +134,11 @@ public class PlatformPlugin {
                 view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP);
                 break;
             case HEAVY_IMPACT:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    view.performHapticFeedback(HapticFeedbackConstants.CONTEXT_CLICK);
-                }
+                // HapticFeedbackConstants.CONTEXT_CLICK from API level 23.
+                view.performHapticFeedback(6);
                 break;
             case SELECTION_CLICK:
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
-                }
+                view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
                 break;
         }
     }
@@ -176,9 +171,7 @@ public class PlatformPlugin {
             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
 
-        // The SYSTEM_UI_FLAG_IMMERSIVE_STICKY flag was introduced in API 19, so we apply it
-        // if desired, and if the current Android version is 19 or greater.
-        if (overlaysToShow.size() == 0 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (overlaysToShow.size() == 0) {
             enabledOverlays |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
         }
 
