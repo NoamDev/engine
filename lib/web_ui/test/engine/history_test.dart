@@ -4,7 +4,6 @@
 
 // @dart = 2.6
 @TestOn('vm && linux')
-// TODO(nurhan): https://github.com/flutter/flutter/issues/51169
 
 import 'dart:async';
 import 'dart:typed_data';
