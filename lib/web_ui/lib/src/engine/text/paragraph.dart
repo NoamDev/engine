@@ -1282,7 +1282,7 @@ void _applyTextStyleToElement({
   if (previousStyle == null) {
     final ui.Color color = style._foreground?.color ?? style._color;
     if (color != null) {
-      cssStyle.color = colorToCssString(color);
+      cssStyle.color = color.toCssString();
     }
     if (style._fontSize != null) {
       cssStyle.fontSize = '${style._fontSize.floor()}px';
@@ -1322,7 +1322,7 @@ void _applyTextStyleToElement({
     if (style._color != previousStyle._color ||
         style._foreground != previousStyle._foreground) {
       final ui.Color color = style._foreground?.color ?? style._color;
-      cssStyle.color = colorToCssString(color);
+      cssStyle.color = color?.toCssString();
     }
 
     if (style._fontSize != previousStyle._fontSize) {
@@ -1366,7 +1366,7 @@ void _applyTextStyleToElement({
         cssStyle.textDecoration = textDecoration;
         final ui.Color decorationColor = style._decorationColor;
         if (decorationColor != null) {
-          cssStyle.textDecorationColor = colorToCssString(decorationColor);
+          cssStyle.textDecorationColor = decorationColor.toCssString();
         }
       }
     }
@@ -1389,7 +1389,7 @@ String _shadowListToCss(List<ui.Shadow> shadows) {
     }
     ui.Shadow shadow = shadows[i];
     sb.write('${shadow.offset.dx}px ${shadow.offset.dy}px '
-        '${shadow.blurRadius}px ${colorToCssString(shadow.color)}');
+        '${shadow.blurRadius}px ${shadow.color.toCssString()}');
   }
   return sb.toString();
 }
@@ -1405,12 +1405,12 @@ void _applyTextBackgroundToElement({
   if (previousStyle == null) {
     if (newBackground != null) {
       domRenderer.setElementStyle(
-          element, 'background-color', colorToCssString(newBackground.color));
+          element, 'background-color', newBackground.color.toCssString());
     }
   } else {
     if (newBackground != previousStyle._background) {
       domRenderer.setElementStyle(
-          element, 'background-color', colorToCssString(newBackground.color));
+          element, 'background-color', newBackground.color?.toCssString());
     }
   }
 }
