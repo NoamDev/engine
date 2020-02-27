@@ -9,12 +9,12 @@
 
 #include <memory>
 
-#include "flutter_view.h"
+#include "flutter_window.h"
 #include "plugin_registrar.h"
 
 namespace flutter {
 
-// An extension to PluginRegistrar providing access to Windows-specific
+// An extension to PluginRegistrar providing access to windows-shell-specific
 // functionality.
 class PluginRegistrarWindows : public PluginRegistrar {
  public:
@@ -23,8 +23,8 @@ class PluginRegistrarWindows : public PluginRegistrar {
   explicit PluginRegistrarWindows(
       FlutterDesktopPluginRegistrarRef core_registrar)
       : PluginRegistrar(core_registrar) {
-    view_ = std::make_unique<FlutterView>(
-        FlutterDesktopRegistrarGetView(core_registrar));
+    window_ = std::make_unique<FlutterWindow>(
+        FlutterDesktopRegistrarGetWindow(core_registrar));
   }
 
   virtual ~PluginRegistrarWindows() = default;
@@ -33,11 +33,11 @@ class PluginRegistrarWindows : public PluginRegistrar {
   PluginRegistrarWindows(PluginRegistrarWindows const&) = delete;
   PluginRegistrarWindows& operator=(PluginRegistrarWindows const&) = delete;
 
-  FlutterView* GetView() { return view_.get(); }
+  FlutterWindow* window() { return window_.get(); }
 
  private:
-  // The associated FlutterView, if any.
-  std::unique_ptr<FlutterView> view_;
+  // The owned FlutterWindow, if any.
+  std::unique_ptr<FlutterWindow> window_;
 };
 
 }  // namespace flutter

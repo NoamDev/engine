@@ -157,6 +157,10 @@ uint64_t FlutterDesktopProcessMessages(
   return controller->engine_state->task_runner->ProcessTasks().count();
 }
 
+HWND FlutterDesktopGetHWND(FlutterDesktopViewControllerRef controller) {
+  return controller->view->GetWindowHandle();
+}
+
 void FlutterDesktopDestroyViewController(
     FlutterDesktopViewControllerRef controller) {
   FlutterEngineShutdown(controller->engine_state->engine);
@@ -171,15 +175,6 @@ FlutterDesktopPluginRegistrarRef FlutterDesktopGetPluginRegistrar(
   // aligning more closely with the Flutter registrar system.
 
   return controller->view->GetRegistrar();
-}
-
-FlutterDesktopViewRef FlutterDesktopGetView(
-    FlutterDesktopViewControllerRef controller) {
-  return controller->view_wrapper.get();
-}
-
-HWND FlutterDesktopViewGetHWND(FlutterDesktopViewRef view) {
-  return view->window->GetWindowHandle();
 }
 
 FlutterDesktopEngineRef FlutterDesktopRunEngine(const char* assets_path,
@@ -207,11 +202,6 @@ void FlutterDesktopRegistrarEnableInputBlocking(
 FlutterDesktopMessengerRef FlutterDesktopRegistrarGetMessenger(
     FlutterDesktopPluginRegistrarRef registrar) {
   return registrar->messenger.get();
-}
-
-FlutterDesktopViewRef FlutterDesktopRegistrarGetView(
-    FlutterDesktopPluginRegistrarRef registrar) {
-  return registrar->window;
 }
 
 bool FlutterDesktopMessengerSendWithReply(FlutterDesktopMessengerRef messenger,
