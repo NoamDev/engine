@@ -47,23 +47,21 @@ import java.util.Set;
  *
  * <p>A {@code FlutterView}'s UI is painted by a corresponding {@link FlutterEngine}.
  *
- * <p>A {@code FlutterView} can operate in 2 different {@link
- * io.flutter.embedding.android.RenderMode}s:
+ * <p>A {@code FlutterView} can operate in 2 different {@link RenderMode}s:
  *
  * <ol>
- *   <li>{@link io.flutter.embedding.android.RenderMode#surface}, which paints a Flutter UI to a
- *       {@link android.view.SurfaceView}. This mode has the best performance, but a {@code
- *       FlutterView} in this mode cannot be positioned between 2 other Android {@code View}s in the
- *       z-index, nor can it be animated/transformed. Unless the special capabilities of a {@link
+ *   <li>{@link RenderMode#surface}, which paints a Flutter UI to a {@link
+ *       android.view.SurfaceView}. This mode has the best performance, but a {@code FlutterView} in
+ *       this mode cannot be positioned between 2 other Android {@code View}s in the z-index, nor
+ *       can it be animated/transformed. Unless the special capabilities of a {@link
  *       android.graphics.SurfaceTexture} are required, developers should strongly prefer this
  *       render mode.
- *   <li>{@link io.flutter.embedding.android.RenderMode#texture}, which paints a Flutter UI to a
- *       {@link android.graphics.SurfaceTexture}. This mode is not as performant as {@link
- *       io.flutter.embedding.android.RenderMode#surface}, but a {@code FlutterView} in this mode
- *       can be animated and transformed, as well as positioned in the z-index between 2+ other
- *       Android {@code Views}. Unless the special capabilities of a {@link
- *       android.graphics.SurfaceTexture} are required, developers should strongly prefer the {@link
- *       io.flutter.embedding.android.RenderMode#surface} render mode.
+ *   <li>{@link RenderMode#texture}, which paints a Flutter UI to a {@link
+ *       android.graphics.SurfaceTexture}. This mode is not as performant as {@link
+ *       RenderMode#surface}, but a {@code FlutterView} in this mode can be animated and
+ *       transformed, as well as positioned in the z-index between 2+ other Android {@code Views}.
+ *       Unless the special capabilities of a {@link android.graphics.SurfaceTexture} are required,
+ *       developers should strongly prefer the {@link RenderMode#surface} render mode.
  * </ol>
  *
  * See <a>https://source.android.com/devices/graphics/arch-tv#surface_or_texture</a> for more
@@ -72,9 +70,11 @@ import java.util.Set;
 public class FlutterView extends FrameLayout {
   private static final String TAG = "FlutterView";
 
+  // Behavior configuration of this FlutterView.
+  @NonNull private RenderMode renderMode;
+  @Nullable private TransparencyMode transparencyMode;
+
   // Internal view hierarchy references.
-  @Nullable private FlutterSurfaceView flutterSurfaceView;
-  @Nullable private FlutterTextureView flutterTextureView;
   @Nullable private RenderSurface renderSurface;
   private final Set<FlutterUiDisplayListener> flutterUiDisplayListeners = new HashSet<>();
   private boolean isFlutterUiDisplayed;
@@ -136,135 +136,75 @@ public class FlutterView extends FrameLayout {
    * <p>
    *
    * <ul>
-   *   <li>A {@link FlutterSurfaceView} is used to render the Flutter UI.
-   *   <li>{@code transparencyMode} defaults to {@link TransparencyMode#opaque}.
+   *   <li>{@link #renderMode} defaults to {@link RenderMode#surface}.
+   *   <li>{@link #transparencyMode} defaults to {@link TransparencyMode#opaque}.
    * </ul>
    *
    * {@code FlutterView} requires an {@code Activity} instead of a generic {@code Context} to be
    * compatible with {@link PlatformViewsController}.
    */
   public FlutterView(@NonNull Context context) {
-    this(context, null, new FlutterSurfaceView(context));
+    this(context, null, null, null);
   }
 
   /**
-   * Deprecated - use {@link #FlutterView(Context, FlutterSurfaceView)} or {@link
-   * #FlutterView(Context, FlutterTextureView)} instead.
+   * Constructs a {@code FlutterView} programmatically, without any XML attributes, and allows
+   * selection of a {@link #renderMode}.
+   *
+   * <p>{@link #transparencyMode} defaults to {@link TransparencyMode#opaque}.
+   *
+   * <p>{@code FlutterView} requires an {@code Activity} instead of a generic {@code Context} to be
+   * compatible with {@link PlatformViewsController}.
    */
-  @Deprecated
   public FlutterView(@NonNull Context context, @NonNull RenderMode renderMode) {
-    super(context, null);
-
-    if (renderMode == RenderMode.surface) {
-      flutterSurfaceView = new FlutterSurfaceView(context);
-      renderSurface = flutterSurfaceView;
-    } else {
-      flutterTextureView = new FlutterTextureView(context);
-      renderSurface = flutterTextureView;
-    }
-
-    init();
+    this(context, null, renderMode, null);
   }
 
   /**
-   * Deprecated - use {@link #FlutterView(Context, FlutterSurfaceView)} or {@link
-   * #FlutterView(Context, FlutterTextureView)} instead, and configure the incoming {@code
-   * FlutterSurfaceView} or {@code FlutterTextureView} for transparency as desired.
-   *
-   * <p>Constructs a {@code FlutterView} programmatically, without any XML attributes, uses a {@link
-   * FlutterSurfaceView} to render the Flutter UI, and allows selection of a {@code
-   * transparencyMode}.
+   * Constructs a {@code FlutterView} programmatically, without any XML attributes, assumes the use
+   * of {@link RenderMode#surface}, and allows selection of a {@link #transparencyMode}.
    *
    * <p>{@code FlutterView} requires an {@code Activity} instead of a generic {@code Context} to be
    * compatible with {@link PlatformViewsController}.
    */
-  @Deprecated
   public FlutterView(@NonNull Context context, @NonNull TransparencyMode transparencyMode) {
-    this(
-        context,
-        null,
-        new FlutterSurfaceView(context, transparencyMode == TransparencyMode.transparent));
+    this(context, null, RenderMode.surface, transparencyMode);
   }
 
   /**
-   * Constructs a {@code FlutterView} programmatically, without any XML attributes, uses the given
-   * {@link FlutterSurfaceView} to render the Flutter UI, and allows selection of a {@code
-   * transparencyMode}.
+   * Constructs a {@code FlutterView} programmatically, without any XML attributes, and allows a
+   * selection of {@link #renderMode} and {@link #transparencyMode}.
    *
    * <p>{@code FlutterView} requires an {@code Activity} instead of a generic {@code Context} to be
    * compatible with {@link PlatformViewsController}.
    */
-  public FlutterView(@NonNull Context context, @NonNull FlutterSurfaceView flutterSurfaceView) {
-    this(context, null, flutterSurfaceView);
+  public FlutterView(
+      @NonNull Context context,
+      @NonNull RenderMode renderMode,
+      @NonNull TransparencyMode transparencyMode) {
+    this(context, null, renderMode, transparencyMode);
   }
 
   /**
-   * Constructs a {@code FlutterView} programmatically, without any XML attributes, uses the given
-   * {@link FlutterTextureView} to render the Flutter UI, and allows selection of a {@code
-   * transparencyMode}.
-   *
-   * <p>{@code FlutterView} requires an {@code Activity} instead of a generic {@code Context} to be
-   * compatible with {@link PlatformViewsController}.
-   */
-  public FlutterView(@NonNull Context context, @NonNull FlutterTextureView flutterTextureView) {
-    this(context, null, flutterTextureView);
-  }
-
-  /**
-   * Constructs a {@code FlutterView} in an XML-inflation-compliant manner.
+   * Constructs a {@code FlutterSurfaceView} in an XML-inflation-compliant manner.
    *
    * <p>{@code FlutterView} requires an {@code Activity} instead of a generic {@code Context} to be
    * compatible with {@link PlatformViewsController}.
    */
   // TODO(mattcarroll): expose renderMode in XML when build system supports R.attr
   public FlutterView(@NonNull Context context, @Nullable AttributeSet attrs) {
-    this(context, attrs, new FlutterSurfaceView(context));
-  }
-
-  /**
-   * Deprecated - use {@link #FlutterView(Context, FlutterSurfaceView)} or {@link
-   * #FlutterView(Context, FlutterTextureView)} instead, and configure the incoming {@code
-   * FlutterSurfaceView} or {@code FlutterTextureView} for transparency as desired.
-   */
-  @Deprecated
-  public FlutterView(
-      @NonNull Context context,
-      @NonNull RenderMode renderMode,
-      @NonNull TransparencyMode transparencyMode) {
-    super(context, null);
-
-    if (renderMode == RenderMode.surface) {
-      flutterSurfaceView =
-          new FlutterSurfaceView(context, transparencyMode == TransparencyMode.transparent);
-      renderSurface = flutterSurfaceView;
-    } else {
-      flutterTextureView = new FlutterTextureView(context);
-      renderSurface = flutterTextureView;
-    }
-
-    init();
+    this(context, attrs, null, null);
   }
 
   private FlutterView(
       @NonNull Context context,
       @Nullable AttributeSet attrs,
-      @NonNull FlutterSurfaceView flutterSurfaceView) {
+      @Nullable RenderMode renderMode,
+      @Nullable TransparencyMode transparencyMode) {
     super(context, attrs);
 
-    this.flutterSurfaceView = flutterSurfaceView;
-    this.renderSurface = flutterSurfaceView;
-
-    init();
-  }
-
-  private FlutterView(
-      @NonNull Context context,
-      @Nullable AttributeSet attrs,
-      @NonNull FlutterTextureView flutterTextureView) {
-    super(context, attrs);
-
-    this.flutterTextureView = flutterTextureView;
-    this.renderSurface = flutterSurfaceView;
+    this.renderMode = renderMode == null ? RenderMode.surface : renderMode;
+    this.transparencyMode = transparencyMode != null ? transparencyMode : TransparencyMode.opaque;
 
     init();
   }
@@ -272,12 +212,20 @@ public class FlutterView extends FrameLayout {
   private void init() {
     Log.v(TAG, "Initializing FlutterView");
 
-    if (flutterSurfaceView != null) {
-      Log.v(TAG, "Internally using a FlutterSurfaceView.");
-      addView(flutterSurfaceView);
-    } else {
-      Log.v(TAG, "Internally using a FlutterTextureView.");
-      addView(flutterTextureView);
+    switch (renderMode) {
+      case surface:
+        Log.v(TAG, "Internally using a FlutterSurfaceView.");
+        FlutterSurfaceView flutterSurfaceView =
+            new FlutterSurfaceView(getContext(), transparencyMode == TransparencyMode.transparent);
+        renderSurface = flutterSurfaceView;
+        addView(flutterSurfaceView);
+        break;
+      case texture:
+        Log.v(TAG, "Internally using a FlutterTextureView.");
+        FlutterTextureView flutterTextureView = new FlutterTextureView(getContext());
+        renderSurface = flutterTextureView;
+        addView(flutterTextureView);
+        break;
     }
 
     // FlutterView needs to be focusable so that the InputMethodManager can interact with it.
@@ -898,12 +846,7 @@ public class FlutterView extends FrameLayout {
     flutterEngine.getRenderer().setViewportMetrics(viewportMetrics);
   }
 
-  /**
-   * Render modes for a {@link FlutterView}.
-   *
-   * <p>Deprecated - please use {@link io.flutter.embedding.android.RenderMode} instead.
-   */
-  @Deprecated()
+  /** Render modes for a {@link FlutterView}. */
   public enum RenderMode {
     /**
      * {@code RenderMode}, which paints a Flutter UI to a {@link android.view.SurfaceView}. This
@@ -927,8 +870,6 @@ public class FlutterView extends FrameLayout {
   /**
    * Transparency mode for a {@code FlutterView}.
    *
-   * <p>Deprecated - please use {@link io.flutter.embedding.android.TransparencyMode} instead.
-   *
    * <p>{@code TransparencyMode} impacts the visual behavior and performance of a {@link
    * FlutterSurfaceView}, which is displayed when a {@code FlutterView} uses {@link
    * RenderMode#surface}.
@@ -937,29 +878,27 @@ public class FlutterView extends FrameLayout {
    * a {@code FlutterView} uses {@link RenderMode#texture}, because a {@link FlutterTextureView}
    * automatically comes with transparency.
    */
-  @Deprecated
   public enum TransparencyMode {
     /**
      * Renders a {@code FlutterView} without any transparency. This affects {@code FlutterView}s in
-     * {@link io.flutter.embedding.android.RenderMode#surface} by introducing a base color of black,
-     * and places the {@link FlutterSurfaceView}'s {@code Window} behind all other content.
+     * {@link RenderMode#surface} by introducing a base color of black, and places the {@link
+     * FlutterSurfaceView}'s {@code Window} behind all other content.
      *
-     * <p>In {@link io.flutter.embedding.android.RenderMode#surface}, this mode is the most
-     * performant and is a good choice for fullscreen Flutter UIs that will not undergo {@code
-     * Fragment} transactions. If this mode is used within a {@code Fragment}, and that {@code
-     * Fragment} is replaced by another one, a brief black flicker may be visible during the switch.
+     * <p>In {@link RenderMode#surface}, this mode is the most performant and is a good choice for
+     * fullscreen Flutter UIs that will not undergo {@code Fragment} transactions. If this mode is
+     * used within a {@code Fragment}, and that {@code Fragment} is replaced by another one, a brief
+     * black flicker may be visible during the switch.
      */
     opaque,
     /**
      * Renders a {@code FlutterView} with transparency. This affects {@code FlutterView}s in {@link
-     * io.flutter.embedding.android.RenderMode#surface} by allowing background transparency, and
-     * places the {@link FlutterSurfaceView}'s {@code Window} on top of all other content.
+     * RenderMode#surface} by allowing background transparency, and places the {@link
+     * FlutterSurfaceView}'s {@code Window} on top of all other content.
      *
-     * <p>In {@link io.flutter.embedding.android.RenderMode#surface}, this mode is less performant
-     * than {@link #opaque}, but this mode avoids the black flicker problem that {@link #opaque} has
-     * when going through {@code Fragment} transactions. Consider using this {@code
-     * TransparencyMode} if you intend to switch {@code Fragment}s at runtime that contain a Flutter
-     * UI.
+     * <p>In {@link RenderMode#surface}, this mode is less performant than {@link #opaque}, but this
+     * mode avoids the black flicker problem that {@link #opaque} has when going through {@code
+     * Fragment} transactions. Consider using this {@code TransparencyMode} if you intend to switch
+     * {@code Fragment}s at runtime that contain a Flutter UI.
      */
     transparent
   }

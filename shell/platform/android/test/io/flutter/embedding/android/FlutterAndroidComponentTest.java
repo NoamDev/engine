@@ -232,14 +232,14 @@ public class FlutterAndroidComponentTest {
 
     @NonNull
     @Override
-    public RenderMode getRenderMode() {
-      return RenderMode.surface;
+    public FlutterView.RenderMode getRenderMode() {
+      return FlutterView.RenderMode.surface;
     }
 
     @NonNull
     @Override
-    public TransparencyMode getTransparencyMode() {
-      return TransparencyMode.transparent;
+    public FlutterView.TransparencyMode getTransparencyMode() {
+      return FlutterView.TransparencyMode.transparent;
     }
 
     @Nullable
@@ -271,12 +271,6 @@ public class FlutterAndroidComponentTest {
     public boolean shouldAttachEngineToActivity() {
       return true;
     }
-
-    @Override
-    public void onFlutterSurfaceViewCreated(@NonNull FlutterSurfaceView flutterSurfaceView) {}
-
-    @Override
-    public void onFlutterTextureViewCreated(@NonNull FlutterTextureView flutterTextureView) {}
 
     @Override
     public void onFlutterUiDisplayed() {}

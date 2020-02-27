@@ -782,26 +782,28 @@ public class FlutterActivity extends Activity
 
   /**
    * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by {@link
-   * FlutterActivityAndFragmentDelegate} to obtain the desired {@link RenderMode} that should be
-   * used when instantiating a {@link FlutterView}.
+   * FlutterActivityAndFragmentDelegate} to obtain the desired {@link FlutterView.RenderMode} that
+   * should be used when instantiating a {@link FlutterView}.
    */
   @NonNull
   @Override
-  public RenderMode getRenderMode() {
-    return getBackgroundMode() == BackgroundMode.opaque ? RenderMode.surface : RenderMode.texture;
+  public FlutterView.RenderMode getRenderMode() {
+    return getBackgroundMode() == BackgroundMode.opaque
+        ? FlutterView.RenderMode.surface
+        : FlutterView.RenderMode.texture;
   }
 
   /**
    * {@link FlutterActivityAndFragmentDelegate.Host} method that is used by {@link
-   * FlutterActivityAndFragmentDelegate} to obtain the desired {@link TransparencyMode} that should
-   * be used when instantiating a {@link FlutterView}.
+   * FlutterActivityAndFragmentDelegate} to obtain the desired {@link FlutterView.TransparencyMode}
+   * that should be used when instantiating a {@link FlutterView}.
    */
   @NonNull
   @Override
-  public TransparencyMode getTransparencyMode() {
+  public FlutterView.TransparencyMode getTransparencyMode() {
     return getBackgroundMode() == BackgroundMode.opaque
-        ? TransparencyMode.opaque
-        : TransparencyMode.transparent;
+        ? FlutterView.TransparencyMode.opaque
+        : FlutterView.TransparencyMode.transparent;
   }
 
   /**
@@ -913,16 +915,6 @@ public class FlutterActivity extends Activity
   @Override
   public boolean shouldAttachEngineToActivity() {
     return true;
-  }
-
-  @Override
-  public void onFlutterSurfaceViewCreated(@NonNull FlutterSurfaceView flutterSurfaceView) {
-    // Hook for subclasses.
-  }
-
-  @Override
-  public void onFlutterTextureViewCreated(@NonNull FlutterTextureView flutterTextureView) {
-    // Hook for subclasses.
   }
 
   @Override

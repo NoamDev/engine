@@ -399,12 +399,14 @@ public class FlutterFragmentActivity extends FragmentActivity
   @NonNull
   protected FlutterFragment createFlutterFragment() {
     BackgroundMode backgroundMode = getBackgroundMode();
-    RenderMode renderMode =
-        backgroundMode == BackgroundMode.opaque ? RenderMode.surface : RenderMode.texture;
-    TransparencyMode transparencyMode =
+    FlutterView.RenderMode renderMode =
         backgroundMode == BackgroundMode.opaque
-            ? TransparencyMode.opaque
-            : TransparencyMode.transparent;
+            ? FlutterView.RenderMode.surface
+            : FlutterView.RenderMode.texture;
+    FlutterView.TransparencyMode transparencyMode =
+        backgroundMode == BackgroundMode.opaque
+            ? FlutterView.TransparencyMode.opaque
+            : FlutterView.TransparencyMode.transparent;
 
     if (getCachedEngineId() != null) {
       Log.v(
