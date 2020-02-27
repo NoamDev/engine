@@ -10,8 +10,6 @@ import 'package:test/test.dart';
 
 import 'package:web_engine_tester/golden_tester.dart';
 
-import 'scuba.dart';
-
 void main() async {
   final Rect region = Rect.fromLTWH(0, 0, 500, 100);
 
@@ -24,7 +22,11 @@ void main() async {
     html.document.querySelector('flt-scene-host').append(testScene);
   }
 
-  setUpStableTestFonts();
+  setUp(() async {
+    await webOnlyInitializePlatform();
+    webOnlyFontCollection.debugRegisterTestFonts();
+    await webOnlyFontCollection.ensureFontsLoaded();
+  });
 
   tearDown(() {
     html.document.querySelector('flt-scene').remove();
