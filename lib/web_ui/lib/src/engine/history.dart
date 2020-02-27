@@ -94,13 +94,11 @@ class BrowserHistory {
       _setupFlutterEntry(_locationStrategy);
 
       // 2. Send a 'popRoute' platform message so the app can handle it accordingly.
-      if (ui.window.onPlatformMessage != null) {
-        ui.window.onPlatformMessage(
-          'flutter/navigation',
-          const JSONMethodCodec().encodeMethodCall(_popRouteMethodCall),
-          (_) {},
-        );
-      }
+      ui.window.onPlatformMessage(
+        'flutter/navigation',
+        const JSONMethodCodec().encodeMethodCall(_popRouteMethodCall),
+        (_) {},
+      );
     } else if (_isFlutterEntry(event.state)) {
       // We get into this scenario when the user changes the url manually. It
       // causes a new entry to be pushed on top of our "flutter" one. When this
@@ -113,15 +111,13 @@ class BrowserHistory {
       _userProvidedRouteName = null;
 
       // Send a 'pushRoute' platform message so the app handles it accordingly.
-      if (ui.window.onPlatformMessage != null) {
-        ui.window.onPlatformMessage(
-          'flutter/navigation',
-          const JSONMethodCodec().encodeMethodCall(
-            MethodCall('pushRoute', newRouteName),
-          ),
-          (_) {},
-        );
-      }
+      ui.window.onPlatformMessage(
+        'flutter/navigation',
+        const JSONMethodCodec().encodeMethodCall(
+          MethodCall('pushRoute', newRouteName),
+        ),
+        (_) {},
+      );
     } else {
       // The user has pushed a new entry on top of our flutter entry. This could
       // happen when the user modifies the hash part of the url directly, for
