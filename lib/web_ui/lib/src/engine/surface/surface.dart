@@ -231,9 +231,9 @@ void _debugRepaintSurfaceStatsOverlay(PersistedScene scene) {
     ..fill();
 
   final double physicalScreenWidth =
-      html.window.innerWidth * EngineWindow.browserDevicePixelRatio;
+      html.window.innerWidth * html.window.devicePixelRatio;
   final double physicalScreenHeight =
-      html.window.innerHeight * EngineWindow.browserDevicePixelRatio;
+      html.window.innerHeight * html.window.devicePixelRatio;
   final double physicsScreenPixelCount =
       physicalScreenWidth * physicalScreenHeight;
 
@@ -402,9 +402,9 @@ void _debugPrintSurfaceStats(PersistedScene scene, int frameNumber) {
       return pixels;
     }).fold(0, (int total, int pixels) => total + pixels);
     final double physicalScreenWidth =
-        html.window.innerWidth * EngineWindow.browserDevicePixelRatio;
+        html.window.innerWidth * html.window.devicePixelRatio;
     final double physicalScreenHeight =
-        html.window.innerHeight * EngineWindow.browserDevicePixelRatio;
+        html.window.innerHeight * html.window.devicePixelRatio;
     final double physicsScreenPixelCount =
         physicalScreenWidth * physicalScreenHeight;
     final double screenPixelRatio = pixelCount / physicsScreenPixelCount;
