@@ -39,6 +39,7 @@ source_set("tonic") {
     "converter",
     "file_loader",
     "logging",
+    "platform",
     "scopes",
     "typed_data",
     "//third_party/dart/runtime:dart_api",
