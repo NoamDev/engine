@@ -108,16 +108,14 @@ using namespace flutter;
 
   if (@available(iOS 10, *)) {
     if ([@"HapticFeedbackType.lightImpact" isEqualToString:feedbackType]) {
-      [[[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight] autorelease]
-          impactOccurred];
+      [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleLight] impactOccurred];
     } else if ([@"HapticFeedbackType.mediumImpact" isEqualToString:feedbackType]) {
-      [[[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium] autorelease]
+      [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium]
           impactOccurred];
     } else if ([@"HapticFeedbackType.heavyImpact" isEqualToString:feedbackType]) {
-      [[[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy] autorelease]
-          impactOccurred];
+      [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleHeavy] impactOccurred];
     } else if ([@"HapticFeedbackType.selectionClick" isEqualToString:feedbackType]) {
-      [[[[UISelectionFeedbackGenerator alloc] init] autorelease] selectionChanged];
+      [[[UISelectionFeedbackGenerator alloc] init] selectionChanged];
     }
   }
 }
