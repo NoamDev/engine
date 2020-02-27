@@ -136,11 +136,6 @@ class HtmlImage implements ui.Image {
     }
   }
 
-  // TODO(het): Support this for asset images and images generated from
-  // `Picture`s.
   /// Returns an error message on failure, null on success.
-  String _toByteData(int format, Callback<Uint8List> callback) {
-    callback(null);
-    return 'Image.toByteData is not supported in Flutter for Web';
-  }
+  String _toByteData(int format, Callback<Uint8List> callback) => null;
 }
