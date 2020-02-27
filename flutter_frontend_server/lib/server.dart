@@ -70,13 +70,12 @@ class _FlutterFrontendCompiler implements frontend.CompilerInterface {
         expression, definitions, typeDefinitions, libraryUri, klass, isStatic);
   }
 
-  // ignore: annotate_overrides
   Future<Null> compileExpressionToJs(
       String libraryUri,
       int line,
       int column,
-      Map<String, String> jsModules,
-      Map<String, String> jsFrameValues,
+      Map<String,String> jsModules,
+      Map<String,String> jsFrameValues,
       String moduleName,
       String expression) {
     throw UnimplementedError('Compile expression to JS is not supported');
@@ -155,8 +154,7 @@ Future<int> starter(
 
   compiler ??= _FlutterFrontendCompiler(output,
       transformer: transformer,
-      unsafePackageSerialization:
-          options['unsafe-package-serialization'] as bool);
+      unsafePackageSerialization: options['unsafe-package-serialization'] as bool);
 
   if (options.rest.isNotEmpty) {
     return await compiler.compile(options.rest[0], options) ? 0 : 254;
