@@ -204,7 +204,7 @@ class EncodableValue {
     }
   }
 
-  EncodableValue(EncodableValue&& other) noexcept { *this = std::move(other); }
+  EncodableValue(EncodableValue&& other) { *this = std::move(other); }
 
   EncodableValue& operator=(const EncodableValue& other) {
     if (&other == this) {
@@ -216,7 +216,7 @@ class EncodableValue {
     return *this;
   }
 
-  EncodableValue& operator=(EncodableValue&& other) noexcept {
+  EncodableValue& operator=(EncodableValue&& other) {
     if (&other == this) {
       return *this;
     }
