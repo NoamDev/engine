@@ -41,7 +41,7 @@ class SurfaceSceneBuilder implements ui.SceneBuilder {
     // the live tree.
     if (surface.oldLayer != null) {
       assert(surface.oldLayer.runtimeType == surface.runtimeType);
-      assert(debugAssertSurfaceState(surface.oldLayer, PersistedSurfaceState.active));
+      assert(surface.oldLayer.isActive);
       surface.oldLayer.state = PersistedSurfaceState.pendingUpdate;
     }
     _adoptSurface(surface);
@@ -264,9 +264,7 @@ class SurfaceSceneBuilder implements ui.SceneBuilder {
   @override
   void addRetained(ui.EngineLayer retainedLayer) {
     final PersistedContainerSurface retainedSurface = retainedLayer;
-    if (assertionsEnabled) {
-      assert(debugAssertSurfaceState(retainedSurface, PersistedSurfaceState.active, PersistedSurfaceState.released));
-    }
+    assert(retainedSurface.isActive || retainedSurface.isReleased);
     retainedSurface.tryRetain();
     _adoptSurface(retainedSurface);
   }
