@@ -40,7 +40,9 @@ void main() async {
             from: paragraph.alphabeticBaseline * baselineRatio),
       );
     }
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
+      skip: browserEngine == BrowserEngine.webkit);
 
   test('predictably lays out a multi-line paragraph', () {
     for (double fontSize in <double>[10.0, 20.0, 30.0, 40.0]) {
@@ -70,7 +72,9 @@ void main() async {
             from: paragraph.alphabeticBaseline * baselineRatio),
       );
     }
-  });
+  },
+      // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
+      skip: browserEngine == BrowserEngine.webkit);
 
   test('lay out unattached paragraph', () {
     final ParagraphBuilder builder = ParagraphBuilder(ParagraphStyle(
