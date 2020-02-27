@@ -250,7 +250,9 @@ class TestCommand extends Command<bool> {
   }
 
   Future<void> _buildTests({List<FilePath> targets}) async {
-    List<String> arguments = <String>[
+    final int exitCode = await runProcess(
+      environment.pubExecutable,
+      <String>[
         'run',
         'build_runner',
         'build',
@@ -262,10 +264,7 @@ class TestCommand extends Command<bool> {
             '--build-filter=${path.relativeToWebUi}.js',
             '--build-filter=${path.relativeToWebUi}.browser_test.dart.js',
           ],
-      ];
-    final int exitCode = await runProcess(
-      environment.pubExecutable,
-      arguments,
+      ],
       workingDirectory: environment.webUiRootDir.path,
     );
 
@@ -288,7 +287,7 @@ class TestCommand extends Command<bool> {
       ...<String>['-r', 'compact'],
       '--concurrency=$concurrency',
       if (isDebug) '--pause-after-load',
-      '--platform=${SupportedBrowsers.instance.supportedBrowserToPlatform[browser]}',
+      '--platform=$browser',
       '--precompiled=${environment.webUiRootDir.path}/build',
       SupportedBrowsers.instance.browserToConfiguration[browser],
       '--',
