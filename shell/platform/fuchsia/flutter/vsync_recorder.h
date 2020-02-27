@@ -26,24 +26,18 @@ class VsyncRecorder {
   // This function is safe to call from any thread.
   VsyncInfo GetCurrentVsyncInfo() const;
 
-  // Update the next Vsync info to |next_presentation_info_|. This is expected
-  // to be called in |scenic::Session::Present2| immedaite callbacks with the
-  // presentation info provided by Scenic.  Only the next vsync
+  // Update the current Vsync info to |presentation_info|.  This is expected
+  // to be called in |scenic::Sesssion::Present| callbacks with the
+  // presentation info provided by scenic.  Only the most recent vsync
   // information will be saved (in order to handle edge cases involving
-  // multiple Scenic sessions in the same process).  This function is safe to
+  // multiple scenic sessions in the same process).  This function is safe to
   // call from any thread.
-  void UpdateNextPresentationInfo(
-      fuchsia::scenic::scheduling::FuturePresentationTimes info);
-
-  void UpdateFramePresentedInfo(zx::time presentation_time);
-
-  fml::TimePoint GetLastPresentationTime() const;
+  void UpdateVsyncInfo(fuchsia::images::PresentationInfo presentation_info);
 
  private:
-  VsyncRecorder() { next_presentation_info_.set_presentation_time(0); }
+  VsyncRecorder() = default;
 
-  fuchsia::scenic::scheduling::PresentationInfo next_presentation_info_;
-  fml::TimePoint last_presentation_time_ = fml::TimePoint::Now();
+  std::optional<fuchsia::images::PresentationInfo> last_presentation_info_;
 
   // Disallow copy and assignment.
   VsyncRecorder(const VsyncRecorder&) = delete;

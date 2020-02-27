@@ -127,9 +127,7 @@ void VsyncWaiter::AwaitVSync() {
   VsyncInfo vsync_info = VsyncRecorder::GetInstance().GetCurrentVsyncInfo();
 
   fml::TimePoint now = fml::TimePoint::Now();
-  fml::TimePoint last_presentation_time =
-      VsyncRecorder::GetInstance().GetLastPresentationTime();
-  fml::TimePoint next_vsync = SnapToNextPhase(now, last_presentation_time,
+  fml::TimePoint next_vsync = SnapToNextPhase(now, vsync_info.presentation_time,
                                               vsync_info.presentation_interval);
   task_runners_.GetUITaskRunner()->PostDelayedTask(
       [& weak_factory_ui = this->weak_factory_ui_] {
@@ -160,9 +158,7 @@ void VsyncWaiter::FireCallbackNow() {
   VsyncInfo vsync_info = VsyncRecorder::GetInstance().GetCurrentVsyncInfo();
 
   fml::TimePoint now = fml::TimePoint::Now();
-  fml::TimePoint last_presentation_time =
-      VsyncRecorder::GetInstance().GetLastPresentationTime();
-  fml::TimePoint next_vsync = SnapToNextPhase(now, last_presentation_time,
+  fml::TimePoint next_vsync = SnapToNextPhase(now, vsync_info.presentation_time,
                                               vsync_info.presentation_interval);
   fml::TimePoint previous_vsync = next_vsync - vsync_info.presentation_interval;
 
