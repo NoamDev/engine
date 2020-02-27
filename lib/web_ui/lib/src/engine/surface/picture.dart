@@ -19,15 +19,6 @@ const int _kCanvasCacheSize = 30;
 /// Canvases available for reuse, capped at [_kCanvasCacheSize].
 final List<BitmapCanvas> _recycledCanvases = <BitmapCanvas>[];
 
-/// Reduces recycled canvas list by 50% to reduce bitmap canvas memory use.
-void _reduceCanvasMemoryUsage() {
-  final int canvasCount = _recycledCanvases.length;
-  for (int i = 0; i < canvasCount; i++) {
-    _recycledCanvases[i].dispose();
-  }
-  _recycledCanvases.clear();
-}
-
 /// A request to repaint a canvas.
 ///
 /// Paint requests are prioritized such that the larger pictures go first. This
@@ -51,26 +42,21 @@ class _PaintRequest {
 List<_PaintRequest> _paintQueue = <_PaintRequest>[];
 
 void _recycleCanvas(EngineCanvas canvas) {
-  if (canvas is BitmapCanvas) {
-    if (canvas.isReusable()) {
-      _recycledCanvases.add(canvas);
-      if (_recycledCanvases.length > _kCanvasCacheSize) {
-        final BitmapCanvas removedCanvas = _recycledCanvases.removeAt(0);
-        removedCanvas.dispose();
-        if (_debugShowCanvasReuseStats) {
-          DebugCanvasReuseOverlay.instance.disposedCount++;
-        }
-      }
+  if (canvas is BitmapCanvas && canvas.isReusable()) {
+    _recycledCanvases.add(canvas);
+    if (_recycledCanvases.length > _kCanvasCacheSize) {
+      final BitmapCanvas removedCanvas = _recycledCanvases.removeAt(0);
+      removedCanvas.dispose();
       if (_debugShowCanvasReuseStats) {
-        DebugCanvasReuseOverlay.instance.inRecycleCount =
-            _recycledCanvases.length;
+        DebugCanvasReuseOverlay.instance.disposedCount++;
       }
-    } else {
-      canvas.dispose();
+    }
+    if (_debugShowCanvasReuseStats) {
+      DebugCanvasReuseOverlay.instance.inRecycleCount =
+          _recycledCanvases.length;
     }
   }
 }
-
 
 /// Signature of a function that instantiates a [PersistedPicture].
 typedef PersistedPictureFactory = PersistedPicture Function(
@@ -286,6 +272,7 @@ class PersistedStandardPicture extends PersistedPicture {
     final ui.Size canvasSize = bounds.size;
     BitmapCanvas bestRecycledCanvas;
     double lastPixelCount = double.infinity;
+
     for (int i = 0; i < _recycledCanvases.length; i++) {
       final BitmapCanvas candidate = _recycledCanvases[i];
       if (!candidate.isReusable()) {
@@ -299,21 +286,13 @@ class PersistedStandardPicture extends PersistedPicture {
       final bool fits = candidate.doesFitBounds(bounds);
       final bool isSmaller = candidatePixelCount < lastPixelCount;
       if (fits && isSmaller) {
-        // [isTooSmall] is used to make sure that a small picture doesn't
-        // reuse and hold onto memory of a large canvas.
-        final double requestedPixelCount = bounds.width * bounds.height;
-        final bool isTooSmall = isSmaller &&
-            requestedPixelCount > 1 &&
-            (candidatePixelCount / requestedPixelCount) > 4;
-        if (!isTooSmall) {
-          bestRecycledCanvas = candidate;
-          lastPixelCount = candidatePixelCount;
-          final bool fitsExactly = candidateSize.width == canvasSize.width &&
-              candidateSize.height == canvasSize.height;
-          if (fitsExactly) {
-            // No need to keep looking any more.
-            break;
-          }
+        bestRecycledCanvas = candidate;
+        lastPixelCount = candidatePixelCount;
+        final bool fitsExactly = candidateSize.width == canvasSize.width &&
+            candidateSize.height == canvasSize.height;
+        if (fitsExactly) {
+          // No need to keep looking any more.
+          break;
         }
       }
     }
