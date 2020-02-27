@@ -19,7 +19,8 @@ class PendingTests;
 
 class TestTimeoutListener : public ::testing::EmptyTestEventListener {
  public:
-  TestTimeoutListener(fml::TimeDelta timeout);
+  TestTimeoutListener(
+      fml::TimeDelta timeout = fml::TimeDelta::FromSeconds(30u));
 
   ~TestTimeoutListener();
 

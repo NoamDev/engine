@@ -72,10 +72,7 @@ TestTimeoutListener::TestTimeoutListener(fml::TimeDelta timeout)
     : timeout_(timeout),
       listener_thread_("test_timeout_listener"),
       listener_thread_runner_(listener_thread_.GetTaskRunner()),
-      pending_tests_(PendingTests::Create(listener_thread_runner_, timeout_)) {
-  FML_LOG(INFO) << "Test timeout of " << timeout_.ToSeconds()
-                << " seconds per test case will be enforced.";
-}
+      pending_tests_(PendingTests::Create(listener_thread_runner_, timeout_)) {}
 
 TestTimeoutListener::~TestTimeoutListener() {
   listener_thread_runner_->PostTask(
