@@ -178,7 +178,7 @@ class BrowserInstallation {
   /// Browser version.
   final String version;
 
-  /// Path the browser executable.
+  /// Path the the browser executable.
   final String executable;
 }
 
