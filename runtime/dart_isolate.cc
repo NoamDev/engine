@@ -508,6 +508,7 @@ bool DartIsolate::Run(const std::string& entrypoint_name,
   }
 
   phase_ = Phase::Running;
+  FML_DLOG(INFO) << "New isolate is in the running state.";
 
   if (on_run) {
     on_run();
@@ -539,6 +540,7 @@ bool DartIsolate::RunFromLibrary(const std::string& library_name,
   }
 
   phase_ = Phase::Running;
+  FML_DLOG(INFO) << "New isolate is in the running state.";
 
   if (on_run) {
     on_run();
@@ -586,6 +588,7 @@ Dart_Isolate DartIsolate::DartCreateAndStartServiceIsolate(
   const auto& settings = vm_data->GetSettings();
 
   if (!settings.enable_observatory) {
+    FML_DLOG(INFO) << "Observatory is disabled.";
     return nullptr;
   }
 
@@ -831,6 +834,9 @@ void DartIsolate::DartIsolateShutdownCallback(
     std::shared_ptr<DartIsolateGroupData>* isolate_group_data,
     std::shared_ptr<DartIsolate>* isolate_data) {
   TRACE_EVENT0("flutter", "DartIsolate::DartIsolateShutdownCallback");
+  FML_DLOG(INFO) << "DartIsolateShutdownCallback"
+                 << " isolate_group_data " << isolate_group_data
+                 << " isolate_data " << isolate_data;
   isolate_data->get()->OnShutdownCallback();
 }
 
@@ -838,6 +844,9 @@ void DartIsolate::DartIsolateShutdownCallback(
 void DartIsolate::DartIsolateGroupCleanupCallback(
     std::shared_ptr<DartIsolateGroupData>* isolate_data) {
   TRACE_EVENT0("flutter", "DartIsolate::DartIsolateGroupCleanupCallback");
+  FML_DLOG(INFO) << "DartIsolateGroupCleanupCallback isolate_data "
+                 << isolate_data;
+
   delete isolate_data;
 }
 
@@ -846,6 +855,9 @@ void DartIsolate::DartIsolateCleanupCallback(
     std::shared_ptr<DartIsolateGroupData>* isolate_group_data,
     std::shared_ptr<DartIsolate>* isolate_data) {
   TRACE_EVENT0("flutter", "DartIsolate::DartIsolateCleanupCallback");
+
+  FML_DLOG(INFO) << "DartIsolateCleanupCallback cleaned up isolate_data "
+                 << isolate_data;
   delete isolate_data;
 }
 
