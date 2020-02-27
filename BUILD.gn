@@ -109,7 +109,7 @@ config("config") {
 }
 
 config("export_dynamic_symbols") {
-  if (is_linux || is_fuchsia) {
+  if (is_linux) {
     inputs = [
       "$flutter_root/common/exported_symbols.sym",
     ]
