@@ -352,14 +352,6 @@ class Shell final : public PlatformView::Delegate,
   /// @brief     Accessor for the disable GPU SyncSwitch
   std::shared_ptr<fml::SyncSwitch> GetIsGpuDisabledSyncSwitch() const;
 
-  //----------------------------------------------------------------------------
-  /// @brief      Get a pointer to the Dart VM used by this running shell
-  ///             instance.
-  ///
-  /// @return     The Dart VM pointer.
-  ///
-  DartVM* GetDartVM();
-
  private:
   using ServiceProtocolHandler =
       std::function<bool(const ServiceProtocol::Handler::ServiceProtocolMap&,
@@ -431,6 +423,8 @@ class Shell final : public PlatformView::Delegate,
              std::unique_ptr<Engine> engine,
              std::unique_ptr<Rasterizer> rasterizer,
              std::unique_ptr<ShellIOManager> io_manager);
+
+  DartVM* GetDartVM();
 
   void ReportTimings();
 
