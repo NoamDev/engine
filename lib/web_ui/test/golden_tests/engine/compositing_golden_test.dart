@@ -592,7 +592,7 @@ void _testCullRectComputation() {
       await matchGoldenFile(
         'compositing_draw_high_quality_text.png',
         region: canvasSize,
-        maxDiffRatePercent: 0.0,
+        maxDiffRate: 0.0,
         pixelComparison: PixelComparison.precise,
       );
     },
