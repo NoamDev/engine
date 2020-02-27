@@ -1,12 +1,13 @@
 package dev.flutter.scenarios;
 
-import static org.junit.Assert.*;
-
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import static org.junit.Assert.*;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -15,11 +16,11 @@ import org.junit.runner.RunWith;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
-  @Test
-  public void useAppContext() {
-    // Context of the app under test.
-    Context appContext = InstrumentationRegistry.getTargetContext();
+    @Test
+    public void useAppContext() {
+        // Context of the app under test.
+        Context appContext = InstrumentationRegistry.getTargetContext();
 
-    assertEquals("dev.flutter.scenarios", appContext.getPackageName());
-  }
+        assertEquals("dev.flutter.scenarios", appContext.getPackageName());
+    }
 }

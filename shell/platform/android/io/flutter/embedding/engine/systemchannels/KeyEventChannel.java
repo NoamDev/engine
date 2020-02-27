@@ -9,20 +9,24 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.InputDevice;
 import android.view.KeyEvent;
-import io.flutter.embedding.engine.dart.DartExecutor;
-import io.flutter.plugin.common.BasicMessageChannel;
-import io.flutter.plugin.common.JSONMessageCodec;
+
 import java.util.HashMap;
 import java.util.Map;
 
-/** TODO(mattcarroll): fill in javadoc for KeyEventChannel. */
+import io.flutter.embedding.engine.dart.DartExecutor;
+import io.flutter.plugin.common.BasicMessageChannel;
+import io.flutter.plugin.common.JSONMessageCodec;
+
+/**
+ * TODO(mattcarroll): fill in javadoc for KeyEventChannel.
+ */
 public class KeyEventChannel {
 
-  @NonNull public final BasicMessageChannel<Object> channel;
+  @NonNull
+  public final BasicMessageChannel<Object> channel;
 
   public KeyEventChannel(@NonNull DartExecutor dartExecutor) {
-    this.channel =
-        new BasicMessageChannel<>(dartExecutor, "flutter/keyevent", JSONMessageCodec.INSTANCE);
+    this.channel = new BasicMessageChannel<>(dartExecutor, "flutter/keyevent", JSONMessageCodec.INSTANCE);
   }
 
   public void keyUp(@NonNull FlutterKeyEvent keyEvent) {
@@ -43,8 +47,7 @@ public class KeyEventChannel {
     channel.send(message);
   }
 
-  private void encodeKeyEvent(
-      @NonNull FlutterKeyEvent event, @NonNull Map<String, Object> message) {
+  private void encodeKeyEvent(@NonNull FlutterKeyEvent event, @NonNull Map<String, Object> message) {
     message.put("flags", event.flags);
     message.put("plainCodePoint", event.plainCodePoint);
     message.put("codePoint", event.codePoint);
@@ -61,14 +64,17 @@ public class KeyEventChannel {
     message.put("repeatCount", event.repeatCount);
   }
 
-  /** Key event as defined by Flutter. */
+  /**
+   * Key event as defined by Flutter.
+   */
   public static class FlutterKeyEvent {
     public final int deviceId;
     public final int flags;
     public final int plainCodePoint;
     public final int codePoint;
     public final int keyCode;
-    @Nullable public final Character complexCharacter;
+    @Nullable
+    public final Character complexCharacter;
     public final int scanCode;
     public final int metaState;
     public final int source;
@@ -76,12 +82,16 @@ public class KeyEventChannel {
     public final int productId;
     public final int repeatCount;
 
-    public FlutterKeyEvent(@NonNull KeyEvent androidKeyEvent) {
+    public FlutterKeyEvent(
+        @NonNull KeyEvent androidKeyEvent
+    ) {
       this(androidKeyEvent, null);
     }
 
     public FlutterKeyEvent(
-        @NonNull KeyEvent androidKeyEvent, @Nullable Character complexCharacter) {
+        @NonNull KeyEvent androidKeyEvent,
+        @Nullable Character complexCharacter
+    ) {
       this(
           androidKeyEvent.getDeviceId(),
           androidKeyEvent.getFlags(),
@@ -92,7 +102,8 @@ public class KeyEventChannel {
           androidKeyEvent.getScanCode(),
           androidKeyEvent.getMetaState(),
           androidKeyEvent.getSource(),
-          androidKeyEvent.getRepeatCount());
+          androidKeyEvent.getRepeatCount()
+      );
     }
 
     public FlutterKeyEvent(
@@ -105,7 +116,8 @@ public class KeyEventChannel {
         int scanCode,
         int metaState,
         int source,
-        int repeatCount) {
+        int repeatCount
+    ) {
       this.deviceId = deviceId;
       this.flags = flags;
       this.plainCodePoint = plainCodePoint;

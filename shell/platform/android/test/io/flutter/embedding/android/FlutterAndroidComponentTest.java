@@ -1,30 +1,12 @@
 package io.flutter.embedding.android;
 
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.withSettings;
-
 import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.FlutterEngineCache;
-import io.flutter.embedding.engine.FlutterJNI;
-import io.flutter.embedding.engine.FlutterShellArgs;
-import io.flutter.embedding.engine.loader.FlutterLoader;
-import io.flutter.embedding.engine.plugins.FlutterPlugin;
-import io.flutter.embedding.engine.plugins.activity.ActivityAware;
-import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
-import io.flutter.plugin.platform.PlatformPlugin;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -35,7 +17,27 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-@Config(manifest = Config.NONE)
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterEngineCache;
+import io.flutter.embedding.engine.FlutterJNI;
+import io.flutter.embedding.engine.FlutterShellArgs;
+import io.flutter.embedding.engine.loader.FlutterLoader;
+import io.flutter.embedding.engine.plugins.FlutterPlugin;
+import io.flutter.embedding.engine.plugins.activity.ActivityAware;
+import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding;
+import io.flutter.plugin.platform.PlatformPlugin;
+
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
+
+@Config(manifest=Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class FlutterAndroidComponentTest {
   @Test
@@ -45,8 +47,7 @@ public class FlutterAndroidComponentTest {
     FlutterLoader mockFlutterLoader = mock(FlutterLoader.class);
     FlutterJNI mockFlutterJni = mock(FlutterJNI.class);
     when(mockFlutterJni.isAttached()).thenReturn(true);
-    FlutterEngine cachedEngine =
-        spy(new FlutterEngine(RuntimeEnvironment.application, mockFlutterLoader, mockFlutterJni));
+    FlutterEngine cachedEngine = spy(new FlutterEngine(RuntimeEnvironment.application, mockFlutterLoader, mockFlutterJni));
     FlutterEngineCache.getInstance().put("my_flutter_engine", cachedEngine);
 
     // Add mock plugin.
@@ -64,8 +65,7 @@ public class FlutterAndroidComponentTest {
     delegate.onAttach(RuntimeEnvironment.application);
 
     // Verify that the plugin is attached to the FlutterEngine.
-    ArgumentCaptor<FlutterPlugin.FlutterPluginBinding> pluginBindingCaptor =
-        ArgumentCaptor.forClass(FlutterPlugin.FlutterPluginBinding.class);
+    ArgumentCaptor<FlutterPlugin.FlutterPluginBinding> pluginBindingCaptor = ArgumentCaptor.forClass(FlutterPlugin.FlutterPluginBinding.class);
     verify(mockPlugin, times(1)).onAttachedToEngine(pluginBindingCaptor.capture());
     FlutterPlugin.FlutterPluginBinding binding = pluginBindingCaptor.getValue();
     assertNotNull(binding.getApplicationContext());
@@ -99,30 +99,23 @@ public class FlutterAndroidComponentTest {
     FlutterLoader mockFlutterLoader = mock(FlutterLoader.class);
     FlutterJNI mockFlutterJni = mock(FlutterJNI.class);
     when(mockFlutterJni.isAttached()).thenReturn(true);
-    FlutterEngine cachedEngine =
-        spy(new FlutterEngine(RuntimeEnvironment.application, mockFlutterLoader, mockFlutterJni));
+    FlutterEngine cachedEngine = spy(new FlutterEngine(RuntimeEnvironment.application, mockFlutterLoader, mockFlutterJni));
     FlutterEngineCache.getInstance().put("my_flutter_engine", cachedEngine);
 
     // Add mock plugin.
-    FlutterPlugin mockPlugin =
-        mock(FlutterPlugin.class, withSettings().extraInterfaces(ActivityAware.class));
+    FlutterPlugin mockPlugin = mock(FlutterPlugin.class, withSettings().extraInterfaces(ActivityAware.class));
     ActivityAware activityAwarePlugin = (ActivityAware) mockPlugin;
-    ActivityPluginBinding.OnSaveInstanceStateListener mockSaveStateListener =
-        mock(ActivityPluginBinding.OnSaveInstanceStateListener.class);
+    ActivityPluginBinding.OnSaveInstanceStateListener mockSaveStateListener = mock(ActivityPluginBinding.OnSaveInstanceStateListener.class);
 
     // Add a OnSaveStateListener when the Activity plugin binding is made available.
-    doAnswer(
-            new Answer() {
-              @Override
-              public Object answer(InvocationOnMock invocation) throws Throwable {
-                ActivityPluginBinding binding =
-                    (ActivityPluginBinding) invocation.getArguments()[0];
-                binding.addOnSaveStateListener(mockSaveStateListener);
-                return null;
-              }
-            })
-        .when(activityAwarePlugin)
-        .onAttachedToActivity(any(ActivityPluginBinding.class));
+    doAnswer(new Answer() {
+      @Override
+      public Object answer(InvocationOnMock invocation) throws Throwable {
+        ActivityPluginBinding binding = (ActivityPluginBinding) invocation.getArguments()[0];
+        binding.addOnSaveStateListener(mockSaveStateListener);
+        return null;
+      }
+    }).when(activityAwarePlugin).onAttachedToActivity(any(ActivityPluginBinding.class));
 
     cachedEngine.getPlugins().add(mockPlugin);
 
@@ -136,8 +129,7 @@ public class FlutterAndroidComponentTest {
     delegate.onAttach(RuntimeEnvironment.application);
 
     // Verify plugin was given an ActivityPluginBinding.
-    ArgumentCaptor<ActivityPluginBinding> pluginBindingCaptor =
-        ArgumentCaptor.forClass(ActivityPluginBinding.class);
+    ArgumentCaptor<ActivityPluginBinding> pluginBindingCaptor = ArgumentCaptor.forClass(ActivityPluginBinding.class);
     verify(activityAwarePlugin, times(1)).onAttachedToActivity(pluginBindingCaptor.capture());
     ActivityPluginBinding binding = pluginBindingCaptor.getValue();
     assertNotNull(binding.getActivity());
@@ -180,6 +172,7 @@ public class FlutterAndroidComponentTest {
       return RuntimeEnvironment.application;
     }
 
+
     @Nullable
     @Override
     public Activity getActivity() {
@@ -198,7 +191,7 @@ public class FlutterAndroidComponentTest {
     @NonNull
     @Override
     public FlutterShellArgs getFlutterShellArgs() {
-      return new FlutterShellArgs(new String[] {});
+      return new FlutterShellArgs(new String[]{});
     }
 
     @Nullable
@@ -256,8 +249,7 @@ public class FlutterAndroidComponentTest {
 
     @Nullable
     @Override
-    public PlatformPlugin providePlatformPlugin(
-        @Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
+    public PlatformPlugin providePlatformPlugin(@Nullable Activity activity, @NonNull FlutterEngine flutterEngine) {
       return null;
     }
 

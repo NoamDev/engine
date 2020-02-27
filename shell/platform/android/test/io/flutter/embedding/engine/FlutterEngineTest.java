@@ -1,18 +1,6 @@
 package test.io.flutter.embedding.engine;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import android.content.Context;
-import io.flutter.embedding.engine.FlutterEngine;
-import io.flutter.embedding.engine.FlutterJNI;
-import io.flutter.embedding.engine.loader.FlutterLoader;
 import io.flutter.plugin.platform.PlatformViewsController;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 import java.util.List;
@@ -27,7 +15,20 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-@Config(manifest = Config.NONE)
+import io.flutter.embedding.engine.FlutterEngine;
+import io.flutter.embedding.engine.FlutterJNI;
+import io.flutter.embedding.engine.loader.FlutterLoader;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+@Config(manifest=Config.NONE)
 @RunWith(RobolectricTestRunner.class)
 public class FlutterEngineTest {
   @Mock FlutterJNI flutterJNI;
@@ -47,8 +48,11 @@ public class FlutterEngineTest {
   @Test
   public void itAutomaticallyRegistersPluginsByDefault() {
     assertTrue(GeneratedPluginRegistrant.getRegisteredEngines().isEmpty());
-    FlutterEngine flutterEngine =
-        new FlutterEngine(RuntimeEnvironment.application, mock(FlutterLoader.class), flutterJNI);
+    FlutterEngine flutterEngine = new FlutterEngine(
+        RuntimeEnvironment.application,
+        mock(FlutterLoader.class),
+        flutterJNI
+    );
 
     List<FlutterEngine> registeredEngines = GeneratedPluginRegistrant.getRegisteredEngines();
     assertEquals(1, registeredEngines.size());
@@ -61,8 +65,9 @@ public class FlutterEngineTest {
         RuntimeEnvironment.application,
         mock(FlutterLoader.class),
         flutterJNI,
-        /*dartVmArgs=*/ new String[] {},
-        /*automaticallyRegisterPlugins=*/ false);
+        /*dartVmArgs=*/new String[] {},
+        /*automaticallyRegisterPlugins=*/false
+    );
 
     assertTrue(GeneratedPluginRegistrant.getRegisteredEngines().isEmpty());
   }
@@ -75,8 +80,7 @@ public class FlutterEngineTest {
 
     PlatformViewsController platformViewsController = mock(PlatformViewsController.class);
 
-    ArgumentCaptor<FlutterEngine.EngineLifecycleListener> engineLifecycleListenerArgumentCaptor =
-        ArgumentCaptor.forClass(FlutterEngine.EngineLifecycleListener.class);
+    ArgumentCaptor<FlutterEngine.EngineLifecycleListener> engineLifecycleListenerArgumentCaptor = ArgumentCaptor.forClass(FlutterEngine.EngineLifecycleListener.class);
 
     // Execute behavior under test.
     new FlutterEngine(
@@ -84,14 +88,13 @@ public class FlutterEngineTest {
         mock(FlutterLoader.class),
         mockFlutterJNI,
         platformViewsController,
-        /*dartVmArgs=*/ new String[] {},
-        /*automaticallyRegisterPlugins=*/ false);
+        /*dartVmArgs=*/new String[] {},
+        /*automaticallyRegisterPlugins=*/false
+    );
 
     // Obtain the EngineLifecycleListener within FlutterEngine that was given to FlutterJNI.
-    verify(mockFlutterJNI)
-        .addEngineLifecycleListener(engineLifecycleListenerArgumentCaptor.capture());
-    FlutterEngine.EngineLifecycleListener engineLifecycleListener =
-        engineLifecycleListenerArgumentCaptor.getValue();
+    verify(mockFlutterJNI).addEngineLifecycleListener(engineLifecycleListenerArgumentCaptor.capture());
+    FlutterEngine.EngineLifecycleListener engineLifecycleListener = engineLifecycleListenerArgumentCaptor.getValue();
     assertNotNull(engineLifecycleListener);
 
     // Simulate a pre-engine restart, AKA hot restart.
@@ -110,8 +113,9 @@ public class FlutterEngineTest {
         context,
         mock(FlutterLoader.class),
         flutterJNI,
-        /*dartVmArgs=*/ new String[] {},
-        /*automaticallyRegisterPlugins=*/ false);
+        /*dartVmArgs=*/new String[] {},
+        /*automaticallyRegisterPlugins=*/false
+    );
 
     verify(context, atLeast(1)).getApplicationContext();
   }
