@@ -149,11 +149,8 @@ ShellTestPlatformViewVulkan::OffScreenSurface::AcquireFrame(
                                       SkAlphaType::kOpaque_SkAlphaType);
   auto surface = SkSurface::MakeRenderTarget(context_.get(), SkBudgeted::kNo,
                                              image_info, 0, nullptr);
-  SurfaceFrame::SubmitCallback callback = [](const SurfaceFrame&,
-                                             SkCanvas* canvas) -> bool {
-    canvas->flush();
-    return true;
-  };
+  SurfaceFrame::SubmitCallback callback =
+      [](const SurfaceFrame&, SkCanvas* canvas) -> bool { return true; };
 
   return std::make_unique<SurfaceFrame>(std::move(surface), true,
                                         std::move(callback));
