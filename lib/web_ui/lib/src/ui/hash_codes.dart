@@ -4,90 +4,102 @@
 
 part of ui;
 
-class _HashEnd { const _HashEnd(); }
-const _HashEnd _hashEnd = _HashEnd();
-
-/// Jenkins hash function, optimized for small integers.
-//
-// Borrowed from the dart sdk: sdk/lib/math/jenkins_smi_hash.dart.
-class _Jenkins {
-  static int combine(int hash, Object o) {
-    assert(o is! Iterable);
-    hash = 0x1fffffff & (hash + o.hashCode);
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    hash = hash ^ (hash >> 6);
-    return hash;
-  }
-
-  static int finish(int hash) {
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    hash = hash ^ (hash >> 11);
-    hash = 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-    return hash;
-  }
+class _HashEnd {
+  const _HashEnd();
 }
 
-/// Combine up to twenty objects' hash codes into one value.
+const _HashEnd _hashEnd = _HashEnd();
+
+/// Combine up to twenty values' hashCodes into one value.
 ///
-/// If you only need to handle one object's hash code, then just refer to its
-/// [Object.hashCode] getter directly.
+/// If you only need to handle one value's hashCode, then just refer to its
+/// [hashCode] getter directly.
 ///
-/// If you need to combine an arbitrary number of objects from a [List] or other
-/// [Iterable], use [hashList]. The output of [hashList] can be used as one of
-/// the arguments to this function.
+/// If you need to combine an arbitrary number of values from a List or other
+/// Iterable, use [hashList]. The output of hashList can be used as one of the
+/// arguments to this function.
 ///
 /// For example:
 ///
-/// ```dart
-/// int hashCode => hashValues(foo, bar, hashList(quux), baz);
-/// ```
-int hashValues(
-  Object arg01,            Object arg02,          [ Object arg03 = _hashEnd,
-  Object arg04 = _hashEnd, Object arg05 = _hashEnd, Object arg06 = _hashEnd,
-  Object arg07 = _hashEnd, Object arg08 = _hashEnd, Object arg09 = _hashEnd,
-  Object arg10 = _hashEnd, Object arg11 = _hashEnd, Object arg12 = _hashEnd,
-  Object arg13 = _hashEnd, Object arg14 = _hashEnd, Object arg15 = _hashEnd,
-  Object arg16 = _hashEnd, Object arg17 = _hashEnd, Object arg18 = _hashEnd,
-  Object arg19 = _hashEnd, Object arg20 = _hashEnd ]) {
-  int result = 0;
-  result = _Jenkins.combine(result, arg01);
-  result = _Jenkins.combine(result, arg02);
+///   int hashCode => hashValues(foo, bar, hashList(quux), baz);
+int hashValues(Object arg01, Object arg02,
+    [Object arg03 = _hashEnd,
+    Object arg04 = _hashEnd,
+    Object arg05 = _hashEnd,
+    Object arg06 = _hashEnd,
+    Object arg07 = _hashEnd,
+    Object arg08 = _hashEnd,
+    Object arg09 = _hashEnd,
+    Object arg10 = _hashEnd,
+    Object arg11 = _hashEnd,
+    Object arg12 = _hashEnd,
+    Object arg13 = _hashEnd,
+    Object arg14 = _hashEnd,
+    Object arg15 = _hashEnd,
+    Object arg16 = _hashEnd,
+    Object arg17 = _hashEnd,
+    Object arg18 = _hashEnd,
+    Object arg19 = _hashEnd,
+    Object arg20 = _hashEnd]) {
+  int result = 373;
+  assert(arg01 is! Iterable);
+  result = 37 * result + arg01.hashCode;
+  assert(arg02 is! Iterable);
+  result = 37 * result + arg02.hashCode;
   if (arg03 != _hashEnd) {
-    result = _Jenkins.combine(result, arg03);
+    assert(arg03 is! Iterable);
+    result = 37 * result + arg03.hashCode;
     if (arg04 != _hashEnd) {
-      result = _Jenkins.combine(result, arg04);
+      assert(arg04 is! Iterable);
+      result = 37 * result + arg04.hashCode;
       if (arg05 != _hashEnd) {
-        result = _Jenkins.combine(result, arg05);
+        assert(arg05 is! Iterable);
+        result = 37 * result + arg05.hashCode;
         if (arg06 != _hashEnd) {
-          result = _Jenkins.combine(result, arg06);
+          assert(arg06 is! Iterable);
+          result = 37 * result + arg06.hashCode;
           if (arg07 != _hashEnd) {
-            result = _Jenkins.combine(result, arg07);
+            assert(arg07 is! Iterable);
+            result = 37 * result + arg07.hashCode;
             if (arg08 != _hashEnd) {
-              result = _Jenkins.combine(result, arg08);
+              assert(arg08 is! Iterable);
+              result = 37 * result + arg08.hashCode;
               if (arg09 != _hashEnd) {
-                result = _Jenkins.combine(result, arg09);
+                assert(arg09 is! Iterable);
+                result = 37 * result + arg09.hashCode;
                 if (arg10 != _hashEnd) {
-                  result = _Jenkins.combine(result, arg10);
+                  assert(arg10 is! Iterable);
+                  result = 37 * result + arg10.hashCode;
                   if (arg11 != _hashEnd) {
-                    result = _Jenkins.combine(result, arg11);
+                    assert(arg11 is! Iterable);
+                    result = 37 * result + arg11.hashCode;
                     if (arg12 != _hashEnd) {
-                      result = _Jenkins.combine(result, arg12);
+                      assert(arg12 is! Iterable);
+                      result = 37 * result + arg12.hashCode;
                       if (arg13 != _hashEnd) {
-                        result = _Jenkins.combine(result, arg13);
+                        assert(arg13 is! Iterable);
+                        result = 37 * result + arg13.hashCode;
                         if (arg14 != _hashEnd) {
-                          result = _Jenkins.combine(result, arg14);
+                          assert(arg14 is! Iterable);
+                          result = 37 * result + arg14.hashCode;
                           if (arg15 != _hashEnd) {
-                            result = _Jenkins.combine(result, arg15);
+                            assert(arg15 is! Iterable);
+                            result = 37 * result + arg15.hashCode;
                             if (arg16 != _hashEnd) {
-                              result = _Jenkins.combine(result, arg16);
+                              assert(arg16 is! Iterable);
+                              result = 37 * result + arg16.hashCode;
                               if (arg17 != _hashEnd) {
-                                result = _Jenkins.combine(result, arg17);
+                                assert(arg17 is! Iterable);
+                                result = 37 * result + arg17.hashCode;
                                 if (arg18 != _hashEnd) {
-                                  result = _Jenkins.combine(result, arg18);
+                                  assert(arg18 is! Iterable);
+                                  result = 37 * result + arg18.hashCode;
                                   if (arg19 != _hashEnd) {
-                                    result = _Jenkins.combine(result, arg19);
+                                    assert(arg19 is! Iterable);
+                                    result = 37 * result + arg19.hashCode;
                                     if (arg20 != _hashEnd) {
-                                      result = _Jenkins.combine(result, arg20);
+                                      assert(arg20 is! Iterable);
+                                      result = 37 * result + arg20.hashCode;
                                       // I can see my house from here!
                                     }
                                   }
@@ -107,17 +119,19 @@ int hashValues(
       }
     }
   }
-  return _Jenkins.finish(result);
+  return result;
 }
 
-/// Combine the [Object.hashCode] values of an arbitrary number of objects from
-/// an [Iterable] into one value. This function will return the same value if
-/// given null as if given an empty list.
-int hashList(Iterable<Object> arguments) {
-  int result = 0;
-  if (arguments != null) {
-    for (Object argument in arguments)
-      result = _Jenkins.combine(result, argument);
+/// Combine the hashCodes of an arbitrary number of values from an Iterable into
+/// one value. This function will return the same value if given "null" as if
+/// given an empty list.
+int hashList(Iterable<Object> args) {
+  int result = 373;
+  if (args != null) {
+    for (Object arg in args) {
+      assert(arg is! Iterable);
+      result = 37 * result + arg.hashCode;
+    }
   }
-  return _Jenkins.finish(result);
+  return result;
 }
