@@ -43,9 +43,7 @@ void main() {
       expect(_placeholder.getBoundingClientRect().width, 1);
       expect(_placeholder.getBoundingClientRect().top, -1);
       expect(_placeholder.getBoundingClientRect().left, -1);
-    },
-        // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
-        skip: browserEngine == BrowserEngine.webkit);
+    });
 
     test('Not relevant events should be forwarded to the framework', () async {
       // Prework. Attach the placeholder to dom.
@@ -136,9 +134,7 @@ void main() {
 
       expect(_placeholder.getBoundingClientRect().height, bodyHeight);
       expect(_placeholder.getBoundingClientRect().width, bodyWidht);
-    },
-        // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
-        skip: browserEngine == BrowserEngine.webkit);
+    });
 
     test('Not relevant events should be forwarded to the framework', () async {
       final html.Event event = html.TouchEvent('touchcancel');
@@ -146,10 +142,7 @@ void main() {
           mobileSemanticsEnabler.tryEnableSemantics(event);
 
       expect(shouldForwardToFramework, true);
-    },
-        // TODO(nurhan): https://github.com/flutter/flutter/issues/50590
-        // TODO(nurhan): https://github.com/flutter/flutter/issues/46638
-        skip: (browserEngine == BrowserEngine.firefox ||
-            browserEngine == BrowserEngine.webkit));
+    }, // TODO(nurhan): https://github.com/flutter/flutter/issues/46638
+        skip: (browserEngine == BrowserEngine.firefox));
   });
 }
