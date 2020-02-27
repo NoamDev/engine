@@ -10,34 +10,38 @@
 
 namespace flutter {
 
-/// A helper class for abstracting various Windows DPI related functions across
-/// Windows OS versions.
+// A helper class for abstracting various Windows DPI related functions across
+// Windows OS versions.
 class Win32DpiHelper {
  public:
   Win32DpiHelper();
 
   ~Win32DpiHelper();
 
-  /// Returns the current DPI. Supports all DPI awareness modes, and is backward
-  /// compatible down to Windows Vista.
-  UINT GetDpi(HWND);
+  // Check if Windows Per Monitor V2 DPI scaling functionality is available on
+  // current system.
+  bool IsPerMonitorV2Available();
+
+  // Wrapper for OS functionality to turn on automatic window non-client scaling
+  BOOL EnableNonClientDpiScaling(HWND);
+
+  // Wrapper for OS functionality to return the DPI for |HWND|
+  UINT GetDpiForWindow(HWND);
+
+  // Sets the current process to a specified DPI awareness context.
+  BOOL SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT);
 
  private:
+  using EnableNonClientDpiScaling_ = BOOL __stdcall(HWND);
   using GetDpiForWindow_ = UINT __stdcall(HWND);
-  using GetDpiForMonitor_ = HRESULT __stdcall(HMONITOR hmonitor,
-                                              MONITOR_DPI_TYPE dpiType,
-                                              UINT* dpiX,
-                                              UINT* dpiY);
-  using MonitorFromWindow_ = HMONITOR __stdcall(HWND hwnd, DWORD dwFlags);
+  using SetProcessDpiAwarenessContext_ = BOOL __stdcall(DPI_AWARENESS_CONTEXT);
 
+  EnableNonClientDpiScaling_* enable_non_client_dpi_scaling_ = nullptr;
   GetDpiForWindow_* get_dpi_for_window_ = nullptr;
-  GetDpiForMonitor_* get_dpi_for_monitor_ = nullptr;
-  MonitorFromWindow_* monitor_from_window_ = nullptr;
+  SetProcessDpiAwarenessContext_* set_process_dpi_awareness_context_ = nullptr;
 
   HMODULE user32_module_ = nullptr;
-  HMODULE shlib_module_ = nullptr;
-  bool dpi_for_window_supported_ = false;
-  bool dpi_for_monitor_supported_ = false;
+  bool permonitorv2_supported_ = false;
 };
 
 }  // namespace flutter
