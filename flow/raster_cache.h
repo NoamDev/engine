@@ -19,9 +19,11 @@ namespace flutter {
 
 class RasterCacheResult {
  public:
-  RasterCacheResult() = default;
+  RasterCacheResult();
 
-  RasterCacheResult(const RasterCacheResult& other) = default;
+  RasterCacheResult(const RasterCacheResult& other);
+
+  ~RasterCacheResult();
 
   RasterCacheResult(sk_sp<SkImage> image, const SkRect& logical_rect);
 
@@ -53,6 +55,8 @@ class RasterCache {
   explicit RasterCache(
       size_t access_threshold = 3,
       size_t picture_cache_limit_per_frame = kDefaultPictureCacheLimitPerFrame);
+
+  ~RasterCache();
 
   static SkIRect GetDeviceBounds(const SkRect& rect, const SkMatrix& ctm) {
     SkRect device_rect;
@@ -105,9 +109,9 @@ class RasterCache {
     RasterCacheResult image;
   };
 
-  template <class Cache>
+  template <class Cache, class Iterator>
   static void SweepOneCacheAfterFrame(Cache& cache) {
-    std::vector<typename Cache::iterator> dead;
+    std::vector<Iterator> dead;
 
     for (auto it = cache.begin(); it != cache.end(); ++it) {
       Entry& entry = it->second;
@@ -125,9 +129,10 @@ class RasterCache {
   const size_t access_threshold_;
   const size_t picture_cache_limit_per_frame_;
   size_t picture_cached_this_frame_ = 0;
-  mutable PictureRasterCacheKey::Map<Entry> picture_cache_;
-  mutable LayerRasterCacheKey::Map<Entry> layer_cache_;
+  PictureRasterCacheKey::Map<Entry> picture_cache_;
+  LayerRasterCacheKey::Map<Entry> layer_cache_;
   bool checkerboard_images_;
+  fml::WeakPtrFactory<RasterCache> weak_factory_;
 
   void TraceStatsToTimeline() const;
 
