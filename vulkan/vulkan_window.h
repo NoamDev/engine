@@ -32,8 +32,7 @@ class VulkanBackbuffer;
 class VulkanWindow {
  public:
   VulkanWindow(fml::RefPtr<VulkanProcTable> proc_table,
-               std::unique_ptr<VulkanNativeSurface> native_surface,
-               bool render_to_surface);
+               std::unique_ptr<VulkanNativeSurface> native_surface);
 
   ~VulkanWindow();
 

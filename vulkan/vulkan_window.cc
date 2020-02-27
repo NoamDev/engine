@@ -17,8 +17,7 @@
 namespace vulkan {
 
 VulkanWindow::VulkanWindow(fml::RefPtr<VulkanProcTable> proc_table,
-                           std::unique_ptr<VulkanNativeSurface> native_surface,
-                           bool render_to_surface)
+                           std::unique_ptr<VulkanNativeSurface> native_surface)
     : valid_(false), vk(std::move(proc_table)) {
   if (!vk || !vk->HasAcquiredMandatoryProcAddresses()) {
     FML_DLOG(INFO) << "Proc table has not acquired mandatory proc addresses.";
@@ -59,13 +58,8 @@ VulkanWindow::VulkanWindow(fml::RefPtr<VulkanProcTable> proc_table,
     return;
   }
 
-  // TODO(38466): Refactor GPU surface APIs take into account the fact that an
-  // external view embedder may want to render to the root surface.
-  if (!render_to_surface) {
-    return;
-  }
-
   // Create the logical surface from the native platform surface.
+
   surface_ = std::make_unique<VulkanSurface>(*vk, *application_,
                                              std::move(native_surface));
 
