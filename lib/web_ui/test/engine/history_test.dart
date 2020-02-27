@@ -3,8 +3,6 @@
 // found in the LICENSE file.
 
 // @dart = 2.6
-@TestOn('vm && linux')
-
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -160,8 +158,7 @@ void main() {
       expect(strategy.currentEntryIndex, -1);
     },
         // TODO(nurhan): https://github.com/flutter/flutter/issues/50836
-        skip: browserEngine == BrowserEngine.edge ||
-            browserEngine == BrowserEngine.webkit);
+        skip: browserEngine == BrowserEngine.edge);
 
     test('handle user-provided url', () async {
       strategy =

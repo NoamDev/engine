@@ -59,14 +59,11 @@ void main() {
 
       expect(shouldForwardToFramework, true);
 
-      // Pointer events are not defined in webkit.
-      if (browserEngine != BrowserEngine.webkit) {
-        event = html.PointerEvent('pointermove');
-        shouldForwardToFramework =
-            desktopSemanticsEnabler.tryEnableSemantics(event);
+      event = html.PointerEvent('pointermove');
+      shouldForwardToFramework =
+          desktopSemanticsEnabler.tryEnableSemantics(event);
 
-        expect(shouldForwardToFramework, true);
-      }
+      expect(shouldForwardToFramework, true);
     },
         // TODO(nurhan): https://github.com/flutter/flutter/issues/50754
         skip: browserEngine == BrowserEngine.edge);

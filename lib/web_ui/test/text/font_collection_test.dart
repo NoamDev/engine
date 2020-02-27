@@ -57,9 +57,7 @@ void main() {
         expect(fontFamilyList.first, 'Ahem ahem ahem');
       },
           // TODO(nurhan): https://github.com/flutter/flutter/issues/50770
-          // TODO(nurhan): https://github.com/flutter/flutter/issues/51142
-          skip: browserEngine == BrowserEngine.edge ||
-              browserEngine == BrowserEngine.webkit);
+          skip: browserEngine == BrowserEngine.edge);
 
       test('Register Asset with capital case letters', () async {
         final String _testFontFamily = "AhEm";
@@ -103,9 +101,7 @@ void main() {
         }
       },
           // TODO(nurhan): https://github.com/flutter/flutter/issues/50770
-          // TODO(nurhan): https://github.com/flutter/flutter/issues/51142
-          skip: browserEngine == BrowserEngine.edge ||
-              browserEngine == BrowserEngine.webkit);
+          skip: browserEngine == BrowserEngine.edge);
 
       test('Register Asset twice with exclamation mark', () async {
         final String _testFontFamily = 'Ahem!!ahem';
@@ -129,9 +125,7 @@ void main() {
         }
       },
           // TODO(nurhan): https://github.com/flutter/flutter/issues/50770
-          // TODO(nurhan): https://github.com/flutter/flutter/issues/51142
-          skip: browserEngine == BrowserEngine.edge ||
-              browserEngine == BrowserEngine.webkit);
+          skip: browserEngine == BrowserEngine.edge);
 
       test('Register Asset twice with comma', () async {
         final String _testFontFamily = 'Ahem ,ahem';
@@ -155,9 +149,7 @@ void main() {
         }
       },
           // TODO(nurhan): https://github.com/flutter/flutter/issues/50770
-          // TODO(nurhan): https://github.com/flutter/flutter/issues/51142
-          skip: browserEngine == BrowserEngine.edge ||
-              browserEngine == BrowserEngine.webkit);
+          skip: browserEngine == BrowserEngine.edge);
 
       test('Register Asset twice with a digit at the start of a token',
           () async {
@@ -182,9 +174,7 @@ void main() {
         }
       },
           // TODO(nurhan): https://github.com/flutter/flutter/issues/50770
-          // TODO(nurhan): https://github.com/flutter/flutter/issues/51142
-          skip: browserEngine == BrowserEngine.edge ||
-              browserEngine == BrowserEngine.webkit);
+          skip: browserEngine == BrowserEngine.edge);
     });
   });
 }
