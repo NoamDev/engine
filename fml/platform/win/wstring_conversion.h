@@ -12,7 +12,16 @@
 namespace fml {
 
 using WideStringConvertor =
-    std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t>;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t>;
+
+inline std::wstring ConvertToWString(const char* path) {
+  if (path == nullptr) {
+    return {};
+  }
+  std::string path8(path);
+  std::wstring_convert<std::codecvt_utf8_utf16<wchar_t>, wchar_t> wchar_conv;
+  return wchar_conv.from_bytes(path8);
+}
 
 inline std::wstring StringToWideString(const std::string& str) {
   WideStringConvertor converter;
