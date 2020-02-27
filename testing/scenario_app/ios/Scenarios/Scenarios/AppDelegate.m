@@ -25,8 +25,7 @@
 
   // This argument is used by the XCUITest for Platform Views so that the app
   // under test will create platform views.
-  // If the test is one of the platform view golden tests,
-  // the launchArgsMap should match the one in the `PlatformVieGoldenTestManager`.
+  // The launchArgsMap should match the one in the `PlatformVieGoldenTestManager`.
   NSDictionary<NSString*, NSString*>* launchArgsMap = @{
     @"--platform-view" : @"platform_view",
     @"--platform-view-multiple" : @"platform_view_multiple",
@@ -38,21 +37,18 @@
     @"--platform-view-transform" : @"platform_view_transform",
     @"--platform-view-opacity" : @"platform_view_opacity",
     @"--platform-view-rotate" : @"platform_view_rotate",
-    @"--gesture-reject-after-touches-ended" : @"platform_view_gesture_reject_after_touches_ended",
-    @"--gesture-reject-eager" : @"platform_view_gesture_reject_eager",
-    @"--gesture-accept" : @"platform_view_gesture_accept",
   };
-  __block NSString* platformViewTestName = nil;
+  __block NSString* goldenTestName = nil;
   [launchArgsMap
       enumerateKeysAndObjectsUsingBlock:^(NSString* argument, NSString* testName, BOOL* stop) {
         if ([[[NSProcessInfo processInfo] arguments] containsObject:argument]) {
-          platformViewTestName = testName;
+          goldenTestName = testName;
           *stop = YES;
         }
       }];
 
-  if (platformViewTestName) {
-    [self readyContextForPlatformViewTests:platformViewTestName];
+  if (goldenTestName) {
+    [self readyContextForPlatformViewTests:goldenTestName];
   } else if ([[[NSProcessInfo processInfo] arguments] containsObject:@"--screen-before-flutter"]) {
     self.window.rootViewController = [[ScreenBeforeFlutter alloc] initWithEngineRunCompletion:nil];
   } else {
@@ -80,13 +76,7 @@
       [[TextPlatformViewFactory alloc] initWithMessenger:flutterViewController.binaryMessenger];
   NSObject<FlutterPluginRegistrar>* registrar =
       [flutterViewController.engine registrarForPlugin:@"scenarios/TextPlatformViewPlugin"];
-  [registrar registerViewFactory:textPlatformViewFactory
-                                withId:@"scenarios/textPlatformView"
-      gestureRecognizersBlockingPolicy:FlutterPlatformViewGestureRecognizersBlockingPolicyEager];
-  [registrar registerViewFactory:textPlatformViewFactory
-                                withId:@"scenarios/textPlatformView_blockPolicyUntilTouchesEnded"
-      gestureRecognizersBlockingPolicy:
-          FlutterPlatformViewGestureRecognizersBlockingPolicyWaitUntilTouchesEnded];
+  [registrar registerViewFactory:textPlatformViewFactory withId:@"scenarios/textPlatformView"];
   self.window.rootViewController = flutterViewController;
 }
 

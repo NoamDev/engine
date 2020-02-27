@@ -11,7 +11,6 @@
 #include "flutter/shell/platform/darwin/common/framework/Headers/FlutterBinaryMessenger.h"
 #include "flutter/shell/platform/darwin/common/framework/Headers/FlutterChannels.h"
 #include "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPlatformViews.h"
-#include "flutter/shell/platform/darwin/ios/framework/Headers/FlutterPlugin.h"
 
 // A UIView that is used as the parent for embedded UIViews.
 //
@@ -20,9 +19,7 @@
 // 2. Dispatching all events that are hittested to the embedded view to the FlutterView.
 @interface FlutterTouchInterceptingView : UIView
 - (instancetype)initWithEmbeddedView:(UIView*)embeddedView
-               flutterViewController:(UIViewController*)flutterViewController
-    gestureRecognizersBlockingPolicy:
-        (FlutterPlatformViewGestureRecognizersBlockingPolicy)blockingPolicy;
+               flutterViewController:(UIViewController*)flutterViewController;
 
 // Stop delaying any active touch sequence (and let it arrive the embedded view).
 - (void)releaseGesture;
@@ -83,10 +80,7 @@ class FlutterPlatformViewsController {
 
   void SetFlutterViewController(UIViewController* flutter_view_controller);
 
-  void RegisterViewFactory(
-      NSObject<FlutterPlatformViewFactory>* factory,
-      NSString* factoryId,
-      FlutterPlatformViewGestureRecognizersBlockingPolicy gestureRecognizerBlockingPolicy);
+  void RegisterViewFactory(NSObject<FlutterPlatformViewFactory>* factory, NSString* factoryId);
 
   void SetFrameSize(SkISize frame_size);
 
@@ -157,10 +151,6 @@ class FlutterPlatformViewsController {
 
   // Only compoiste platform views in this set.
   std::unordered_set<int64_t> views_to_recomposite_;
-
-  // The FlutterPlatformViewGestureRecognizersBlockingPolicy for each type of platform view.
-  std::map<std::string, FlutterPlatformViewGestureRecognizersBlockingPolicy>
-      gesture_recognizers_blocking_policies;
 
   std::map<int64_t, std::unique_ptr<SkPictureRecorder>> picture_recorders_;
 
