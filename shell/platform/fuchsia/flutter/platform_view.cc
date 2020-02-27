@@ -603,13 +603,6 @@ void PlatformView::SetSemanticsEnabled(bool enabled) {
 }
 
 // |flutter::PlatformView|
-// |flutter_runner::AccessibilityBridge::Delegate|
-void PlatformView::DispatchSemanticsAction(int32_t node_id,
-                                           flutter::SemanticsAction action) {
-  flutter::PlatformView::DispatchSemanticsAction(node_id, action, {});
-}
-
-// |flutter::PlatformView|
 void PlatformView::UpdateSemantics(
     flutter::SemanticsNodeUpdates update,
     flutter::CustomAccessibilityActionUpdates actions) {
