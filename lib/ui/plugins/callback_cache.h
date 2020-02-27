@@ -15,11 +15,11 @@
 
 namespace flutter {
 
-struct DartCallbackRepresentation {
+typedef struct {
   std::string name;
   std::string class_name;
   std::string library_path;
-};
+} DartCallbackRepresentation;
 
 class DartCallbackCache {
  public:
