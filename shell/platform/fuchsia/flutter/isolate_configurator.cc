@@ -16,12 +16,10 @@ namespace flutter_runner {
 IsolateConfigurator::IsolateConfigurator(
     UniqueFDIONS fdio_ns,
     fidl::InterfaceHandle<fuchsia::sys::Environment> environment,
-    zx::channel directory_request,
-    zx::eventpair view_ref)
+    zx::channel directory_request)
     : fdio_ns_(std::move(fdio_ns)),
       environment_(std::move(environment)),
-      directory_request_(std::move(directory_request)),
-      view_ref_(std::move(view_ref)) {}
+      directory_request_(std::move(directory_request)) {}
 
 IsolateConfigurator::~IsolateConfigurator() = default;
 
@@ -44,8 +42,7 @@ bool IsolateConfigurator::ConfigureCurrentIsolate() {
 
 void IsolateConfigurator::BindFuchsia() {
   fuchsia::dart::Initialize(std::move(environment_),
-                            std::move(directory_request_),
-                            std::move(view_ref_));
+                            std::move(directory_request_));
 }
 
 void IsolateConfigurator::BindZircon() {
